@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>boys, not men</title>
+    <style>
+        /* -------------------------------
+       Global Styles
+       ------------------------------- */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            font-family: 'Times New Roman', 'Roboto Condensed', serif;
+            font-stretch: condensed;
+            overflow: auto;
+        }
+
+        /* The main container starts small and expands as items are added */
+        #main-container {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background-color: #fff;
+            margin: 0 auto;
+        }
+
+        /* -------------------------------
+       Background Squares
+       ------------------------------- */
+        .bg-square {
+            position: absolute;
+            width: 400px;
+            /* This matches the width of images; change this value if you want a different square width */
+            border: 1px solid #000;
+            /* Darker border; change thickness or color here */
+            z-index: 0;
+        }
+
+        /* -------------------------------
+       Item Containers
+       ------------------------------- */
+        .image-container {
+            position: absolute;
+            width: 400px;
+            /* This is the fixed width for each item container (image and/or text box) */
+            cursor: pointer;
+            overflow: visible;
+            z-index: 2;
+            border: 1px solid #000;
+            /* Default border for image items */
+        }
+
+        /* For text‑only items (items 8–10), we remove the container border */
+        .text-only-container {
+            border: none;
+            /* You can add custom padding/margin here if desired */
+        }
+
+        /* -------------------------------
+       Images
+       ------------------------------- */
+        .image {
+            display: block;
+            width: 100%;
+            height: auto;
+            filter: grayscale(20%);
+            /* Slightly greyed out; adjust percentage as needed */
+            border: 1px solid #000;
+        }
+
+        /* -------------------------------
+       Overlay (Text Box)
+       ------------------------------- */
+        .overlay {
+            position: absolute;
+            width: 250px;
+            /* Fixed width of text box; change if you need wider or narrower boxes */
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #000;
+            /* Border for the text box remains even on text-only items */
+            color: #000;
+            font-size: 20px;
+            font-weight: 50;
+            white-space: pre-wrap;
+            box-sizing: border-box;
+            z-index: 3;
+            overflow-wrap: normal;
+            word-break: normal;
+        }
+
+        /* -------------------------------
+       CSS Animations
+       ------------------------------- */
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        .float {
+            animation: float 2s ease-in-out;
+        }
+
+        @keyframes glitch {
+            0% {
+                opacity: 1;
+            }
+
+            20% {
+                opacity: 0;
+            }
+
+            40% {
+                opacity: 1;
+            }
+
+            60% {
+                opacity: 0;
+            }
+
+            80% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .glitch {
+            animation: glitch 1s infinite;
+        }
+
+        @keyframes grow {
+            from {
+                font-size: 20px;
+                font-weight: 50;
+            }
+
+            to {
+                font-size: 60px;
+                font-weight: 900;
+            }
+        }
+
+        .grow {
+            animation: grow 3s forwards;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            25% {
+                transform: translate(-10px, 0);
+            }
+
+            50% {
+                transform: translate(10px, 0);
+            }
+
+            75% {
+                transform: translate(-10px, 0);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        /* Hover effects for item 8 */
+        .hover-stretch:hover {
+            letter-spacing: 5px;
+        }
+
+        .hover-mark:hover {
+            text-decoration: line-through;
+        }
+
+        .hover-sharper:hover {
+            font-weight: 900;
+        }
+
+        /* -------------------------------
+       End of CSS
+       ------------------------------- */
+    </style>
+</head>
+
+<body>
+    <div id="main-container"></div>
+    <script>
+        /* -------------------------------
+           Data for 10 Items
+           -------------------------------
+           Items 1–7 are paired with images (located in "assets").
+           Items 8, 9, and 10 are text‑only.
+           
+           Animation types:
+             - "none" for no special effect.
+             - "floatExceptWeight" for item 5.
+             - "glitchWords" for item 6.
+             - "growSwelling" for item 7.
+             - "hoverEffects" for item 8.
+             - "switchWords" for item 9.
+             - "countUpAndShake" for item 10.
+        */
+        const itemsData = [
+            { id: 1, src: "assets/image1.jpg", text: "Naruto Uzumaki, student, 3x savior of the secret ninja village of the leaf", animation: "none" },
+            { id: 2, src: "assets/image2.jpg", text: "Sangoku, son of Bardock, savior of Earth from 6 alien invasions", animation: "none" },
+            { id: 3, src: "assets/image3.jpg", text: "Kurosaki Ichigo, son of Isshin Kurosaki, ghost buster, orange hair", animation: "none" },
+            { id: 4, src: "assets/image4.jpg", text: "Gon Freecs, son of Jin Freecs, heart of gold", animation: "none" },
+            { id: 5, src: "assets/image5.jpg", text: "boys, not men\nhanded the weight of a world\non a Tuesday after class", animation: "floatExceptWeight" },
+            { id: 6, src: "assets/image6.jpg", text: "boys born pregnant\nwith a fist, a fox\na sword, a ball of light", animation: "glitchWords" },
+            { id: 7, src: "assets/image7.jpg", text: "boyhood, not a spurt\nbut a swelling in the negative \nspace of abandonment", animation: "growSwelling" },
+            { id: 8, src: "", text: "the crevasse the father left\nbetween panels stretch marked\nas sharper wounds than disbelief", animation: "hoverEffects" },
+            { id: 9, src: "", text: "fatherhood, not a figure\nbut a disappearing act\na slower way to conjure an absence", animation: "switchWords" },
+            { id: 10, src: "", text: "I’ve dogeared each of the 2,295\nchapters of brokenness, each\n a smaller commandment\non the nameless altar of disbelief", animation: "countUpAndShake" }
+        ];
+
+        let currentIndex = 0;
+        const mainContainer = document.getElementById("main-container");
+        const maxImageWidth = 400;
+        const estimatedItemHeight = 300; // Default height for any item
+        const gap = 10;  // Vertical gap between items
+
+        /* -------------------------------
+           Positioning Pattern for Items
+           -------------------------------
+           For items 1–7 (with images), we use a horizontal pattern (patternX).
+           For items 8, 9, and 10 (text‑only), we use custom positions.
+           
+           Change these values to adjust the horizontal (x) position:
+             - The "baseX" value centers items.
+             - The "patternX" array for items 1–7 can be adjusted.
+             - In addNextItem(), for items 8, 9, and 10, the newX values can be modified.
+        */
+        let baseX = window.innerWidth / 2 - maxImageWidth / 2;
+        const patternX = [
+            baseX,                        // item 1: centered
+            baseX + 0.6 * maxImageWidth,  // item 2: shifted right; change multiplier (0.6) to adjust horizontal offset
+            baseX - 0.6 * maxImageWidth,  // item 3: shifted left
+            baseX,                        // item 4: centered
+            baseX + 0.6 * maxImageWidth,  // item 5: shifted right
+            baseX - 0.6 * maxImageWidth,  // item 6: shifted left
+            baseX                         // item 7: centered
+            // Items 8–10 will use custom positions below.
+        ];
+        // The vertical position (y) of the first item is set to center the viewport vertically.
+        let lastY = window.innerHeight / 2 - estimatedItemHeight / 2;
+
+        /* -------------------------------
+           Background Squares Generation
+           -------------------------------
+           This function generates background squares that do not overlap with one another
+           or with item containers.
+           
+           To change the position of a background square:
+             - Adjust candidate.x and candidate.y values.
+             - These squares are 600px wide and have a random height between 200 and 400px.
+             - Their positions are chosen randomly; if you need fixed positions, you can modify this function.
+        */
+        function generateBackgroundSquares(num = 30) {
+            const placed = [];
+            function overlaps(rect, other) {
+                return !(rect.x + rect.w <= other.x || rect.x >= other.x + other.w ||
+                    rect.y + rect.h <= other.y || rect.y >= other.y + other.h);
+            }
+            for (let i = 0; i < num; i++) {
+                let attempts = 0;
+                while (attempts < 100) {
+                    const bgRectWidth = 300; // New background rectangle width
+                    const candidate = {
+                        x: Math.random() * (window.innerWidth - bgRectWidth),
+                        y: Math.random() * mainContainer.offsetHeight,
+                        w: bgRectWidth,
+                        h: 600 + Math.random() * 200  // Height between 600 and 800, ensuring height > width
+                    };
+                    let overlap = placed.some(r => overlaps(candidate, r));
+                    if (!overlap) {
+                        placed.push(candidate);
+                        const square = document.createElement("div");
+                        square.className = "bg-square";
+                        square.style.left = candidate.x + "px";
+                        square.style.top = candidate.y + "px";
+                        square.style.height = candidate.h + "px";
+                        mainContainer.appendChild(square);
+                        break;
+                    }
+                    attempts++;
+                }
+            }
+        }
+        generateBackgroundSquares();
+
+        /* -------------------------------
+           Utility: Create a Word Span
+           -------------------------------
+           Wraps a word in a span element; you can adjust margin or classes here.
+        */
+        function createWordSpan(word, extraClass = "") {
+            const span = document.createElement("span");
+            span.innerText = word;
+            if (extraClass) span.classList.add(extraClass);
+            span.style.marginRight = "5px";
+            return span;
+        }
+
+        /* -------------------------------
+           animateText Function
+           -------------------------------
+           Splits the text into tokens (using regex so full words are preserved)
+           and appends them one-by-one with a 300ms delay.
+           Special effects are applied based on the animationType.
+           
+           To adjust the delay, change the value in setTimeout(addNext, 300).
+        */
+        function animateText(overlay, text, animationType, itemId) {
+            const tokens = text.split(/(\s+)/); // Preserves spaces and newlines
+            overlay.innerHTML = "";
+            let i = 0;
+            function addNext() {
+                if (i < tokens.length) {
+                    const token = tokens[i];
+                    if (token.match(/^\s+$/)) {
+                        overlay.appendChild(document.createTextNode(token));
+                    } else {
+                        let span = createWordSpan(token);
+                        if (animationType === "floatExceptWeight" && itemId === 5) {
+                            if (token.toLowerCase().replace(/[^a-z]/g, "") === "weight") {
+                                span.classList.add("no-float");
+                                span.style.fontWeight = "900";
+                            }
+                        } else if (animationType === "glitchWords" && itemId === 6) {
+                            const target = token.toLowerCase().replace(/[^a-z]/g, "");
+                            if (["fist", "fox", "sword", "ball"].includes(target)) {
+                                span.classList.add("glitch");
+                            }
+                        } else if (animationType === "growSwelling" && itemId === 7) {
+                            if (token.toLowerCase() === "swelling") {
+                                span.classList.add("grow");
+                            }
+                        } else if (animationType === "hoverEffects" && itemId === 8) {
+                            const clean = token.toLowerCase().replace(/[^a-z]/g, "");
+                            if (clean === "stretch") span.classList.add("hover-stretch");
+                            else if (clean === "marked") span.classList.add("hover-mark");
+                            else if (clean === "sharper") span.classList.add("hover-sharper");
+                        }
+                        overlay.appendChild(span);
+                    }
+                    i++;
+                    setTimeout(addNext, 300); // Delay between tokens (in ms)
+                } else {
+                    if (animationType === "switchWords") startSwitchWords(overlay);
+                    if (animationType === "countUpAndShake") startCountUp(overlay);
+                }
+            }
+            addNext();
+        }
+
+        /* -------------------------------
+           Special Effects Functions
+           -------------------------------
+           startSwitchWords: For item 9, randomly switches target word positions every second.
+           startCountUp: For item 10, counts up the number "2,295" over 5 seconds.
+        */
+        function startSwitchWords(overlay) {
+            setInterval(() => {
+                // Filter out only the target words (act, way, absence); leave "figure" as is.
+                const spans = Array.from(overlay.querySelectorAll("span")).filter(span => {
+                    const txt = span.innerText.toLowerCase().replace(/[^a-z]/g, "");
+                    return ["act", "way", "absence"].includes(txt);
+                });
+                if (spans.length) {
+                    // Fade out each target word over 1.5 seconds.
+                    spans.forEach(span => {
+                        span.style.transition = "opacity 1.5s";
+                        span.style.opacity = "0";
+                    });
+                    // After 1.5 seconds, shuffle the texts among the target words and fade them in over 1.5 seconds.
+                    setTimeout(() => {
+                        const texts = spans.map(span => span.innerText);
+                        for (let i = texts.length - 1; i > 0; i--) {
+                            let j = Math.floor(Math.random() * (i + 1));
+                            [texts[i], texts[j]] = [texts[j], texts[i]];
+                        }
+                        spans.forEach((span, index) => {
+                            span.innerText = texts[index];
+                            span.style.opacity = "1";
+                        });
+                    }, 1500);
+                }
+            }, 3000); // The entire cycle repeats every 3 seconds.
+        }
+
+        function startCountUp(overlay) {
+            let html = overlay.innerHTML;
+            const regex = /2,295/;
+            if (regex.test(html)) {
+                html = html.replace(regex, '<span id="countup">0</span>');
+                overlay.innerHTML = html;
+                const countSpan = document.getElementById("countup");
+                let current = 0;
+                const target = 2295;
+                const duration = 5000;
+                const stepTime = 50;
+                const steps = duration / stepTime;
+                const increment = target / steps;
+                const interval = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(interval);
+                    }
+                    countSpan.innerText = Math.floor(current);
+                }, stepTime);
+            }
+        }
+
+        /* -------------------------------
+           createItemContainer Function
+           -------------------------------
+           Creates a container for an item.
+           For image items (items 1–7), an image is added.
+           For text-only items (8–10), no image is added and the container gets the class "text-only-container"
+           which removes its border.
+           
+           The overlay is animated via animateText().
+           
+           For image items, the overlay position is chosen from candidate positions (and nudged).
+           For text-only items, the overlay is simply positioned with fixed offsets.
+           
+           To change the overlay position for image items, adjust the candidates array.
+           To change the overlay position for text-only items, adjust the overlay.style.top and overlay.style.left values.
+        */
+        function createItemContainer(data, x, y) {
+            const container = document.createElement("div");
+            container.className = "image-container";
+            container.style.left = x + "px";
+            container.style.top = y + "px";
+
+            if (data.src) {
+                const img = document.createElement("img");
+                img.className = "image";
+                img.src = data.src;
+                img.alt = data.text.split("\n")[0];
+                container.appendChild(img);
+            } else {
+                // For text-only items (8, 9, 10), remove container border.
+                container.classList.add("text-only-container");
+                container.style.height = estimatedItemHeight + "px";
+            }
+
+            const overlay = document.createElement("div");
+            overlay.className = "overlay";
+            container.appendChild(overlay);
+            animateText(overlay, data.text, data.animation, data.id);
+
+            if (data.src) {
+                // For image items, position overlay using candidate positions.
+                const img = container.querySelector("img");
+                img.onload = function () {
+                    const containerWidth = container.offsetWidth;
+                    const containerHeight = container.offsetHeight;
+                    const candidates = [
+                        { top: "10px", left: "10px" },
+                        { top: "10px", left: (containerWidth - overlay.offsetWidth - 10) + "px" },
+                        { top: (containerHeight - overlay.offsetHeight - 10) + "px", left: "10px" },
+                        { top: (containerHeight - overlay.offsetHeight - 10) + "px", left: (containerWidth - overlay.offsetWidth - 10) + "px" }
+                    ];
+                    const pos = candidates[Math.floor(Math.random() * candidates.length)];
+                    // Nudge the overlay so it overlaps the image and extends into the background.
+                    overlay.style.top = (parseInt(pos.top) - 20) + "px";
+                    overlay.style.left = (parseInt(pos.left) - 20) + "px";
+                };
+            } else {
+                // For text-only items, position the overlay with fixed offsets.
+                // Change these values to adjust the position of the text box within the container.
+                overlay.style.top = "20px";
+                overlay.style.left = "20px";
+            }
+
+            container.addEventListener("click", function (e) {
+                e.stopPropagation();
+                if (currentIndex < itemsData.length - 1) {
+                    addNextItem();
+                } else {
+                    scatterAndVanish();
+                }
+            });
+            return container;
+        }
+
+        /* -------------------------------
+           centerOnElement Function
+           -------------------------------
+           Smoothly centers the viewport on the given element.
+        */
+        function centerOnElement(el) {
+            const rect = el.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2 + window.pageXOffset;
+            const centerY = rect.top + rect.height / 2 + window.pageYOffset;
+            window.scrollTo({
+                left: centerX - window.innerWidth / 2,
+                top: centerY - window.innerHeight / 2,
+                behavior: "smooth"
+            });
+        }
+
+        /* -------------------------------
+           addNextItem Function
+           -------------------------------
+           Adds the next item sequentially.
+           
+           For items 1–7 (with images), use the horizontal pattern defined in patternX.
+           For text-only items (8–10), custom horizontal positions are defined:
+             - For item 8: newX is set to baseX - 100 (to the left of center).
+             - For item 9: newX is set to baseX + 100 (to the right of center).
+             - For item 10: newX is set to baseX - 100 (to the left of center).
+           
+           To change these positions, modify the newX assignments below.
+        */
+        function addNextItem() {
+            if (currentIndex < itemsData.length - 1) {
+                currentIndex++;
+
+                // Default vertical offset is zero.
+                let customOffset = 0;
+                // For text-only items (items 8–10), adjust vertical offset.
+                if (!itemsData[currentIndex].src) {
+                    if (itemsData[currentIndex].id === 8) {
+                        // To move item 8 up by 50 pixels, set a negative offset.
+                        customOffset = -50;
+                    } else if (itemsData[currentIndex].id === 9) {
+                        // To move item 9 down by 20 pixels, use a positive offset.
+                        customOffset = -100;
+                    } else if (itemsData[currentIndex].id === 10) {
+                        // To move item 10 up by 30 pixels, set a negative offset.
+                        customOffset = -200;
+                    }
+                }
+
+                // Compute newY based on lastY, estimated height, gap, plus any custom vertical offset.
+                let newY = lastY + estimatedItemHeight + gap + customOffset;
+                // Ensure newY doesn't go below zero.
+                newY = Math.max(0, newY);
+                console.log("New Y for item " + itemsData[currentIndex].id + ": " + newY);
+
+                // For horizontal position, use the default pattern for image items,
+                // but override for text-only items if desired.
+                let newX = patternX[currentIndex];
+                if (!itemsData[currentIndex].src) {
+                    if (itemsData[currentIndex].id === 8) {
+                        newX = baseX - 300; // Item 8: change horizontal offset here as needed.
+                    } else if (itemsData[currentIndex].id === 9) {
+                        newX = baseX + 400; // Item 9: change horizontal offset here.
+                    } else if (itemsData[currentIndex].id === 10) {
+                        newX = baseX - 100; // Item 10: change horizontal offset here.
+                    }
+                }
+
+                // Update lastY to the new position.
+                lastY = newY;
+
+                // Create and append the new item.
+                const newContainer = createItemContainer(itemsData[currentIndex], newX, newY);
+                mainContainer.appendChild(newContainer);
+                centerOnElement(newContainer);
+
+                // Expand the main container's height if needed.
+                const bottom = newY + estimatedItemHeight + gap;
+                if (bottom > mainContainer.offsetHeight) {
+                    mainContainer.style.height = bottom + "px";
+                }
+                generateBackgroundSquares(2);
+            }
+        }
+
+        /* -------------------------------
+           scatterAndVanish Function
+           -------------------------------
+           When the final item (item 10) is clicked, all items scatter slowly over 10 seconds and fade out over 5 seconds.
+           After 15 seconds, the main container is cleared.
+        */
+        function scatterAndVanish() {
+            const items = document.querySelectorAll(".image-container");
+            items.forEach(item => {
+                const dx = (Math.random() - 0.5) * 200; // Adjust scatter distance as needed
+                const dy = (Math.random() - 0.5) * 200;
+                item.style.transition = "transform 30s, opacity 10s";
+                item.style.transform = `translate(${dx}px, ${dy}px)`;
+                item.style.opacity = "0";
+            });
+            setTimeout(() => { mainContainer.innerHTML = ""; }, 15000);
+        }
+
+        /* -------------------------------
+           Initial Load
+           -------------------------------
+           On load, the first item is added (centered in the viewport) and the container height is set.
+        */
+        window.onload = function () {
+            baseX = window.innerWidth / 2 - maxImageWidth / 2;
+            // Set horizontal positions for items 1–7 using patternX:
+            patternX[0] = baseX;
+            patternX[1] = baseX + 0.6 * maxImageWidth;
+            patternX[2] = baseX - 0.6 * maxImageWidth;
+            patternX[3] = baseX;
+            patternX[4] = baseX + 0.6 * maxImageWidth;
+            patternX[5] = baseX - 0.6 * maxImageWidth;
+            patternX[6] = baseX;
+            // For text-only items (8–10), patternX values are set to baseX (and will be overridden in addNextItem)
+            patternX[7] = baseX;
+            patternX[8] = baseX;
+            patternX[9] = baseX;
+            lastY = window.innerHeight / 2 - estimatedItemHeight / 2;
+            const firstContainer = createItemContainer(itemsData[0], patternX[0], lastY);
+            mainContainer.appendChild(firstContainer);
+            centerOnElement(firstContainer);
+            mainContainer.style.height = (lastY + estimatedItemHeight + gap) + "px";
+        };
+
+        /* -------------------------------
+           Additional Hover Effect for Item 5
+           -------------------------------
+           When hovering over the overlay of item 5 (containing "boys, not men"),
+           all spans except those with class "no-float" receive the "float" class for 3 seconds.
+        */
+        document.addEventListener("mouseover", function (e) {
+            const overlay = e.target.closest(".overlay");
+            if (overlay && overlay.parentElement.querySelector("img")) {
+                const imgAlt = overlay.parentElement.querySelector("img").alt;
+                if (imgAlt.toLowerCase().includes("boys")) {
+                    overlay.querySelectorAll("span").forEach(span => {
+                        if (!span.classList.contains("no-float")) span.classList.add("float");
+                    });
+                    setTimeout(() => {
+                        overlay.querySelectorAll("span").forEach(span => { span.classList.remove("float"); });
+                    }, 3000);
+                }
+            }
+        });
+        /* -------------------------------
+           End of Script
+           -------------------------------
+           To change the positions of each text box or image, adjust:
+             - The "patternX" array for items 1–7.
+             - In the addNextItem() function, the newX values for items 8, 9, and 10 (custom positions).
+             - The "gap" variable to increase or decrease vertical spacing.
+             - In generateBackgroundSquares(), adjust candidate.x and candidate.y if you want fixed positions.
+        */
+    </script>
+</body>
+
+</html>
