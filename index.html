@@ -84,11 +84,12 @@
     </div>
   </div>
   <script>
-    // Reveals the caption below the image and opens the link in an external window
+    // Reveals the caption below the image and opens the link in a new window
     function showCaption(anchor) {
       var caption = anchor.parentElement.querySelector('.caption');
       caption.style.display = 'block';
-      window.open(anchor.href, 'externalWindow', 'toolbar=no,scrollbars=yes,resizable=yes,width=800,height=600');
+      // Use '_blank' to open a new window every time
+      window.open(anchor.href, '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,width=800,height=600');
       return false; // Prevent default navigation
     }
   </script>
