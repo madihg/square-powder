@@ -72,17 +72,23 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: black; /* Underlying black background */
+      background-color: black;
       background-size: cover;
       background-position: center;
       opacity: 0;
-      transition: opacity 2s ease-in-out; /* Smoother fade effect */
+      transition: opacity 2s ease-in-out;
       z-index: 1;
     }
   </style>
 </head>
 
 <body>
+
+  <!-- Header Section -->
+  <div class="header">
+    <img src="assets/magazine.jpg" alt="Header Image" class="header-image">
+    <div class="header-text">Exclusive Interview With Artist & Agent Provocateur Hassan Kayk X Upsiders</div>
+  </div>
 
   <!-- Background Image Element -->
   <div id="bg-image" class="bg-image"></div>
@@ -92,16 +98,14 @@
 
   <script>
     const textData = `
-      "Exclusive Interview (assets/magazine.jpg)
+      Exclusive Interview (assets/magazine.jpg)
       With Artist & Agent Provocateur (assets/magazine.jpg)
       Hassan Kayk X Upsiders (assets/magazine.jpg)
       "My reputation as an exhibitionist
       and a provocateur started a few years ago
       I called my show at the Serpentine (assets/serpentine.jpg)
       "Portrait of the artist as a young man
-      on creative
-      and glutamine
-      and caffeine anydrous"
+      on creatine"
       I set up a gym in the gallery (assets/gymp.jpg)
       I brought my powders and supplements (assets/powders.jpg)
       worked out every day as visitors watched (assets/visitors.jpg)
@@ -115,7 +119,7 @@
       of our thoughts, lock in 
       belonging
       My obliques are the art (assets/obliques.jpg)
-      My lats the Mona Lisa (assets/lats.jpg)
+      My lats a De Koenig (assets/lats.jpg)
       One evening, I took 3g of MDMA (assets/mdma.jpg)
       invited folks to observe the 6-hour trip (assets/craving.jpg)
       as my fibers longed to touch their skins (assets/craving.jpg)
@@ -152,30 +156,26 @@
     function updateVisibility() {
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
-      let lastVisibleLine = null;
+      let activeImage = "";
 
-      // Determine which text lines are visible.
+      // Use CODE 1's logic for determining visible lines.
       textLines.forEach((line, index) => {
         if (scrollY >= index * windowHeight * 0.5) {
           line.style.opacity = "1";
-          lastVisibleLine = line;
+          if (line.dataset.image) {
+            activeImage = line.dataset.image;
+          }
         } else {
           line.style.opacity = "0";
         }
       });
 
-      // If the last visible line has an associated image, use it; otherwise, revert to black.
-      let activeImage = "";
-      if (lastVisibleLine && lastVisibleLine.dataset.image) {
-        activeImage = lastVisibleLine.dataset.image;
-      }
-
       if (activeImage) {
         bgImage.style.backgroundImage = `url(${activeImage})`;
         bgImage.style.opacity = "0.3";
       } else {
-        bgImage.style.backgroundImage = "none"; // Removes any previously set image.
-        bgImage.style.opacity = "1"; // Fully display the black background.
+        bgImage.style.backgroundImage = "none";
+        bgImage.style.opacity = "0";
       }
     }
 
