@@ -17,12 +17,14 @@
       font-style: italic;
       font-stretch: condensed;
       overflow: auto;
+      /* Allow horizontal scrolling */
+      overflow-x: auto;
     }
 
     /* The main container starts small and expands as items are added */
     #main-container {
       position: relative;
-      width: 100%;
+      /* We'll update width dynamically */
       min-height: 100vh;
       background-color: #fff;
       margin: 0 auto;
@@ -53,7 +55,7 @@
     /* Responsive adjustment: scale down .image-container on small viewports */
     @media screen and (max-width: 500px) {
       .image-container {
-        width: 90%; /* Use a relative width */
+        width: 90%;
       }
     }
 
@@ -161,9 +163,10 @@
   <div id="main-container"></div>
   <script>
     /* Global variables for layout calculations */
-    let maxImageWidth; // Will be set based on viewport size
+    let maxImageWidth; // Based on viewport size
     let baseX;
-    let patternX = []; // Array to hold horizontal positions for items
+    let patternX = []; // Horizontal positions for items
+    let lastY; // Tracks the vertical position of the last item
 
     /* -------------------------------
        Data for 10 Items
@@ -187,6 +190,29 @@
     const gap = 10;  // Vertical gap between items
 
     /* -------------------------------
+       Function: updateMainContainerDimensions
+       -------------------------------
+       Recalculates the leftmost and rightmost positions of all item containers
+       and updates the main container's width and left margin so that all items are visible.
+    */
+    function updateMainContainerDimensions() {
+      const containers = document.querySelectorAll(".image-container");
+      let minLeft = Infinity;
+      let maxRight = -Infinity;
+      containers.forEach(container => {
+        const left = container.offsetLeft;
+        const width = container.offsetWidth;
+        if (left < minLeft) minLeft = left;
+        if (left + width > maxRight) maxRight = left + width;
+      });
+      // Compute new width for the canvas
+      const newWidth = maxRight - minLeft;
+      mainContainer.style.width = newWidth + "px";
+      // Shift the container so that the leftmost item aligns with the viewport's left edge
+      mainContainer.style.marginLeft = -minLeft + "px";
+    }
+
+    /* -------------------------------
        Background Squares Generation
        ------------------------------- */
     function generateBackgroundSquares(num = 30) {
@@ -198,12 +224,12 @@
       for (let i = 0; i < num; i++) {
         let attempts = 0;
         while (attempts < 100) {
-          const bgRectWidth = 300; // Adjust width for background squares
+          const bgRectWidth = 300;
           const candidate = {
             x: Math.random() * (window.innerWidth - bgRectWidth),
             y: Math.random() * mainContainer.offsetHeight,
             w: bgRectWidth,
-            h: 600 + Math.random() * 200  // Height between 600 and 800
+            h: 600 + Math.random() * 200
           };
           let overlap = placed.some(r => overlaps(candidate, r));
           if (!overlap) {
@@ -445,6 +471,8 @@
           mainContainer.style.height = bottom + "px";
         }
         generateBackgroundSquares(2);
+        // Update the container dimensions after adding an item.
+        updateMainContainerDimensions();
       }
     }
 
@@ -463,9 +491,6 @@
       setTimeout(() => { mainContainer.innerHTML = ""; }, 15000);
     }
 
-    /* Global variable for vertical positioning */
-    let lastY;
-
     /* -------------------------------
        Initial Load
        ------------------------------- */
@@ -481,7 +506,7 @@
         baseX + 0.6 * maxImageWidth,  // Item 5
         baseX - 0.6 * maxImageWidth,  // Item 6
         baseX,                        // Item 7
-        baseX,                        // Placeholder for item 8 (will be overridden)
+        baseX,                        // Placeholder for item 8 (overridden)
         baseX,                        // Placeholder for item 9
         baseX                         // Placeholder for item 10
       ];
@@ -490,6 +515,8 @@
       mainContainer.appendChild(firstContainer);
       centerOnElement(firstContainer);
       mainContainer.style.height = (lastY + estimatedItemHeight + gap) + "px";
+      // Update canvas dimensions initially
+      updateMainContainerDimensions();
     };
 
     /* -------------------------------
