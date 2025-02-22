@@ -2,201 +2,513 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scrolling Text with Header</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>boys, not men</title>
   <style>
+    /* -------------------------------
+       Global Styles
+       ------------------------------- */
     body {
-      font-family: 'Times New Roman', serif;
-      font-style: italic;
       margin: 0;
       padding: 0;
-      background-color: black;
-      color: white;
-      overflow-y: scroll;
+      background-color: #fff;
+      font-family: 'Times New Roman', 'Roboto Condensed', serif;
+      font-style: italic;
+      font-stretch: condensed;
+      overflow: auto;
+    }
+
+    /* The main container starts small and expands as items are added */
+    #main-container {
       position: relative;
-    }
-
-    /* Header Section Styles */
-    .header {
-      display: flex;
-      align-items: center;
-      padding: 20px;
-      background-color: #111;
-    }
-
-    .header-image {
-      width: 200px;
-      height: auto;
-    }
-
-    .header-text {
-      font-size: 24px;
-      margin-left: 20px;
-    }
-
-    @media screen and (max-width: 600px) {
-      .header {
-        flex-direction: column;
-        text-align: center;
-        padding: 10px; /* reduced padding for smaller screens */
-      }
-      .header-image {
-        width: 150px;
-      }
-      .header-text {
-        margin-left: 0;
-        margin-top: 10px;
-        font-size: 20px;
-      }
-    }
-
-    /* Scrolling Text Container Styles */
-    .container {
-      position: relative;
-      width: 80%;
-      max-width: 600px;
-      margin: 0 auto;
-      padding-top: 50vh;
-    }
-
-    .line {
-      font-size: 24px;
-      text-align: center;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-      position: relative;
-      z-index: 2;
-      margin-top: 50vh;
-    }
-
-    /* Background Image Styles */
-    .bg-image {
-      position: fixed;
-      top: 0;
-      left: 0;
       width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      background-color: black;
-      opacity: 0;
-      transition: opacity 2s ease-in-out;
-      z-index: 1;
+      min-height: 100vh;
+      background-color: #fff;
+      margin: 0 auto;
     }
 
-    /* Additional responsive adjustments for small viewports */
-    @media screen and (max-width: 600px) {
-      .container {
-        width: 90%;
-        padding-top: 30vh; /* reduced top padding */
-      }
-      .line {
-        margin-top: 30vh; /* reduced spacing between lines */
-        font-size: 20px; /* slightly smaller font size */
+    /* -------------------------------
+       Background Squares
+       ------------------------------- */
+    .bg-square {
+      position: absolute;
+      width: 300px; /* Adjusted width for background squares */
+      border: 1px solid #000;
+      z-index: 0;
+    }
+
+    /* -------------------------------
+       Item Containers
+       ------------------------------- */
+    .image-container {
+      position: absolute;
+      width: 400px; /* Default fixed width for larger screens */
+      cursor: pointer;
+      overflow: visible;
+      z-index: 2;
+      border: 1px solid #000;
+    }
+
+    /* Responsive adjustment: scale down .image-container on small viewports */
+    @media screen and (max-width: 500px) {
+      .image-container {
+        width: 90%; /* Use a relative width */
       }
     }
+
+    /* For text‑only items (items 8–10), remove the container border */
+    .text-only-container {
+      border: none;
+    }
+
+    /* -------------------------------
+       Images
+       ------------------------------- */
+    .image {
+      display: block;
+      width: 100%;
+      height: auto;
+      filter: grayscale(20%);
+      border: 1px solid #000;
+    }
+
+    /* -------------------------------
+       Overlay (Text Box)
+       ------------------------------- */
+    .overlay {
+      position: absolute;
+      width: 250px;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #000;
+      color: #000;
+      font-size: 20px;
+      font-weight: 50;
+      white-space: pre-wrap;
+      box-sizing: border-box;
+      z-index: 3;
+      overflow-wrap: normal;
+      word-break: normal;
+    }
+
+    /* -------------------------------
+       CSS Animations
+       ------------------------------- */
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0); }
+    }
+
+    .float {
+      animation: float 2s ease-in-out;
+    }
+
+    @keyframes glitch {
+      0% { opacity: 1; }
+      20% { opacity: 0; }
+      40% { opacity: 1; }
+      60% { opacity: 0; }
+      80% { opacity: 1; }
+      100% { opacity: 1; }
+    }
+
+    .glitch {
+      animation: glitch 1s infinite;
+    }
+
+    @keyframes grow {
+      from { font-size: 20px; font-weight: 50; }
+      to { font-size: 60px; font-weight: 900; }
+    }
+
+    .grow {
+      animation: grow 3s forwards;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(-10px, 0); }
+      50% { transform: translate(10px, 0); }
+      75% { transform: translate(-10px, 0); }
+      100% { transform: translate(0, 0); }
+    }
+
+    .shake {
+      animation: shake 0.5s;
+    }
+
+    /* Hover effects for item 8 */
+    .hover-stretch:hover {
+      letter-spacing: 5px;
+    }
+
+    .hover-mark:hover {
+      text-decoration: line-through;
+    }
+
+    .hover-sharper:hover {
+      font-weight: 900;
+    }
+    /* -------------------------------
+       End of CSS
+       ------------------------------- */
   </style>
 </head>
 
 <body>
-  <!-- Header Section -->
-  <div class="header">
-    <img src="assets/magazine.jpg" alt="Header Image" class="header-image">
-    <div class="header-text">Exclusive Interview With Artist & Agent Provocateur Hassan Kayk X Upsiders</div>
-  </div>
-
-  <!-- Background Image -->
-  <div id="bg-image" class="bg-image"></div>
-
-  <!-- Scrolling Text Container -->
-  <div class="container" id="text-container"></div>
-
+  <div id="main-container"></div>
   <script>
-    const textData = `
-      "My reputation as an exhibitionist
-      and a provocateur started a few years ago
-      I called my show at the Serpentine (assets/serpentine.jpg)
-      "Portrait of the artist as a young man
-      on creative
-      and glutamine
-      and caffeine anydrous"
-      I set up a gym in the gallery (assets/gymp.jpg)
-      I brought my powders and supplements (assets/powders.jpg)
-      worked out every day as visitors watched (assets/visitors.jpg)
-      my practice involves becoming the human rat
-      the circus freak
-      the zoo animal
-      I put on display that which goes into our attempt 
-      to infiltrate community
-      press our connection with the weight (assets/press.jpg)
-      of our bodies, the size 
-      of our thoughts, lock in 
-      belonging
-      My obliques are the art (assets/obliques.jpg)
-      My lats the Mona Lisa (assets/lats.jpg)
-      One evening, I took 3g of MDMA (assets/mdma.jpg)
-      invited folks to observe the 6-hour trip (assets/craving.jpg)
-      as my fibers longed to touch their skins (assets/craving.jpg)
-      My body is another temple (assets/temple.jpg)
-      where boyhood echoes (assets/temple.jpg)
-      echoes (assets/temple.jpg)
-      echoes (assets/temple.jpg)
-      against walls of flesh
-      craving sweat to quench its thirst
-      and one day I will grow 
-      large enough to be everywhere"
-    `;
+    /* Global variables for layout calculations */
+    let maxImageWidth; // Will be set based on viewport size
+    let baseX;
+    let patternX = []; // Array to hold horizontal positions for items
 
-    const container = document.getElementById("text-container");
-    const bgImage = document.getElementById("bg-image");
+    /* -------------------------------
+       Data for 10 Items
+       ------------------------------- */
+    const itemsData = [
+      { id: 1, src: "assets/image1.jpg", text: "Naruto Uzumaki, student, 3x savior of the secret ninja village of the leaf", animation: "none" },
+      { id: 2, src: "assets/image2.jpg", text: "Sangoku, son of Bardock, savior of Earth from 6 alien invasions", animation: "none" },
+      { id: 3, src: "assets/image3.jpg", text: "Kurosaki Ichigo, son of Isshin Kurosaki, ghost buster, orange hair", animation: "none" },
+      { id: 4, src: "assets/image4.jpg", text: "Gon Freecs, son of Jin Freecs, heart of gold", animation: "none" },
+      { id: 5, src: "assets/image5.jpg", text: "boys, not men\nhanded the weight of a world\non a Tuesday after class", animation: "floatExceptWeight" },
+      { id: 6, src: "assets/image6.jpg", text: "boys born pregnant\nwith a fist, a fox\na sword, a ball of light", animation: "glitchWords" },
+      { id: 7, src: "assets/image7.jpg", text: "boyhood, not a spurt\nbut a swelling in the negative \nspace of abandonment", animation: "growSwelling" },
+      { id: 8, src: "", text: "the crevasse the father left\nbetween panels stretch marked\nas sharper wounds than disbelief", animation: "hoverEffects" },
+      { id: 9, src: "", text: "fatherhood, not a figure\nbut a disappearing act\na slower way to conjure an absence", animation: "switchWords" },
+      { id: 10, src: "", text: "I’ve dogeared each of the 2,295\nchapters of brokenness, each\n a smaller commandment\non the nameless altar of disbelief", animation: "countUpAndShake" }
+    ];
 
-    // Split and create text lines with optional image data
-    const lines = textData.trim().split("\n").map(line => line.trim());
-    lines.forEach((line) => {
-      const div = document.createElement("div");
-      div.classList.add("line");
-      const imgMatch = line.match(/\((.*?)\)/);
-      if (imgMatch) {
-        div.textContent = line.replace(/\(.*?\)/, "");
-        div.dataset.image = imgMatch[1];
-      } else {
-        div.textContent = line;
+    let currentIndex = 0;
+    const mainContainer = document.getElementById("main-container");
+    const estimatedItemHeight = 300; // Default height for any item
+    const gap = 10;  // Vertical gap between items
+
+    /* -------------------------------
+       Background Squares Generation
+       ------------------------------- */
+    function generateBackgroundSquares(num = 30) {
+      const placed = [];
+      function overlaps(rect, other) {
+        return !(rect.x + rect.w <= other.x || rect.x >= other.x + other.w ||
+                 rect.y + rect.h <= other.y || rect.y >= other.y + other.h);
       }
-      container.appendChild(div);
-    });
-
-    const textLines = document.querySelectorAll(".line");
-
-    function updateVisibility() {
-      const scrollY = window.scrollY;
-      const windowHeight = window.innerHeight;
-      let activeImage = "";
-
-      // Determine visibility and active image for the current scroll position
-      textLines.forEach((line, index) => {
-        if (scrollY >= index * windowHeight * 0.5) {
-          line.style.opacity = "1";
-          if (line.dataset.image) {
-            activeImage = line.dataset.image;
+      for (let i = 0; i < num; i++) {
+        let attempts = 0;
+        while (attempts < 100) {
+          const bgRectWidth = 300; // Adjust width for background squares
+          const candidate = {
+            x: Math.random() * (window.innerWidth - bgRectWidth),
+            y: Math.random() * mainContainer.offsetHeight,
+            w: bgRectWidth,
+            h: 600 + Math.random() * 200  // Height between 600 and 800
+          };
+          let overlap = placed.some(r => overlaps(candidate, r));
+          if (!overlap) {
+            placed.push(candidate);
+            const square = document.createElement("div");
+            square.className = "bg-square";
+            square.style.left = candidate.x + "px";
+            square.style.top = candidate.y + "px";
+            square.style.height = candidate.h + "px";
+            mainContainer.appendChild(square);
+            break;
           }
-        } else {
-          line.style.opacity = "0";
+          attempts++;
         }
-      });
+      }
+    }
+    generateBackgroundSquares();
 
-      // Update background image with smooth transition
-      if (activeImage) {
-        bgImage.style.backgroundImage = `url(${activeImage})`;
-        bgImage.style.opacity = "0.3";
-      } else {
-        bgImage.style.backgroundImage = 'none';
-        bgImage.style.opacity = "1";
+    /* -------------------------------
+       Utility: Create a Word Span
+       ------------------------------- */
+    function createWordSpan(word, extraClass = "") {
+      const span = document.createElement("span");
+      span.innerText = word;
+      if (extraClass) span.classList.add(extraClass);
+      span.style.marginRight = "5px";
+      return span;
+    }
+
+    /* -------------------------------
+       animateText Function
+       ------------------------------- */
+    function animateText(overlay, text, animationType, itemId) {
+      const tokens = text.split(/(\s+)/);
+      overlay.innerHTML = "";
+      let i = 0;
+      function addNext() {
+        if (i < tokens.length) {
+          const token = tokens[i];
+          if (token.match(/^\s+$/)) {
+            overlay.appendChild(document.createTextNode(token));
+          } else {
+            let span = createWordSpan(token);
+            if (animationType === "floatExceptWeight" && itemId === 5) {
+              if (token.toLowerCase().replace(/[^a-z]/g, "") === "weight") {
+                span.classList.add("no-float");
+                span.style.fontWeight = "900";
+              }
+            } else if (animationType === "glitchWords" && itemId === 6) {
+              const target = token.toLowerCase().replace(/[^a-z]/g, "");
+              if (["fist", "fox", "sword", "ball"].includes(target)) {
+                span.classList.add("glitch");
+              }
+            } else if (animationType === "growSwelling" && itemId === 7) {
+              if (token.toLowerCase() === "swelling") {
+                span.classList.add("grow");
+              }
+            } else if (animationType === "hoverEffects" && itemId === 8) {
+              const clean = token.toLowerCase().replace(/[^a-z]/g, "");
+              if (clean === "stretch") span.classList.add("hover-stretch");
+              else if (clean === "marked") span.classList.add("hover-mark");
+              else if (clean === "sharper") span.classList.add("hover-sharper");
+            }
+            overlay.appendChild(span);
+          }
+          i++;
+          setTimeout(addNext, 300);
+        } else {
+          if (animationType === "switchWords") startSwitchWords(overlay);
+          if (animationType === "countUpAndShake") startCountUp(overlay);
+        }
+      }
+      addNext();
+    }
+
+    /* -------------------------------
+       Special Effects Functions
+       ------------------------------- */
+    function startSwitchWords(overlay) {
+      setInterval(() => {
+        const spans = Array.from(overlay.querySelectorAll("span")).filter(span => {
+          const txt = span.innerText.toLowerCase().replace(/[^a-z]/g, "");
+          return ["act", "way", "absence"].includes(txt);
+        });
+        if (spans.length) {
+          spans.forEach(span => {
+            span.style.transition = "opacity 1.5s";
+            span.style.opacity = "0";
+          });
+          setTimeout(() => {
+            const texts = spans.map(span => span.innerText);
+            for (let i = texts.length - 1; i > 0; i--) {
+              let j = Math.floor(Math.random() * (i + 1));
+              [texts[i], texts[j]] = [texts[j], texts[i]];
+            }
+            spans.forEach((span, index) => {
+              span.innerText = texts[index];
+              span.style.opacity = "1";
+            });
+          }, 1500);
+        }
+      }, 3000);
+    }
+
+    function startCountUp(overlay) {
+      let html = overlay.innerHTML;
+      const regex = /2,295/;
+      if (regex.test(html)) {
+        html = html.replace(regex, '<span id="countup">0</span>');
+        overlay.innerHTML = html;
+        const countSpan = document.getElementById("countup");
+        let current = 0;
+        const target = 2295;
+        const duration = 5000;
+        const stepTime = 50;
+        const steps = duration / stepTime;
+        const increment = target / steps;
+        const interval = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            current = target;
+            clearInterval(interval);
+          }
+          countSpan.innerText = Math.floor(current);
+        }, stepTime);
       }
     }
 
-    window.addEventListener("scroll", updateVisibility);
-    updateVisibility();
+    /* -------------------------------
+       createItemContainer Function
+       ------------------------------- */
+    function createItemContainer(data, x, y) {
+      const container = document.createElement("div");
+      container.className = "image-container";
+      container.style.left = x + "px";
+      container.style.top = y + "px";
+
+      if (data.src) {
+        const img = document.createElement("img");
+        img.className = "image";
+        img.src = data.src;
+        img.alt = data.text.split("\n")[0];
+        container.appendChild(img);
+      } else {
+        container.classList.add("text-only-container");
+        container.style.height = estimatedItemHeight + "px";
+      }
+
+      const overlay = document.createElement("div");
+      overlay.className = "overlay";
+      container.appendChild(overlay);
+      animateText(overlay, data.text, data.animation, data.id);
+
+      if (data.src) {
+        const img = container.querySelector("img");
+        img.onload = function () {
+          const containerWidth = container.offsetWidth;
+          const containerHeight = container.offsetHeight;
+          const candidates = [
+            { top: "10px", left: "10px" },
+            { top: "10px", left: (containerWidth - overlay.offsetWidth - 10) + "px" },
+            { top: (containerHeight - overlay.offsetHeight - 10) + "px", left: "10px" },
+            { top: (containerHeight - overlay.offsetHeight - 10) + "px", left: (containerWidth - overlay.offsetWidth - 10) + "px" }
+          ];
+          const pos = candidates[Math.floor(Math.random() * candidates.length)];
+          overlay.style.top = (parseInt(pos.top) - 20) + "px";
+          overlay.style.left = (parseInt(pos.left) - 20) + "px";
+        };
+      } else {
+        overlay.style.top = "20px";
+        overlay.style.left = "20px";
+      }
+
+      container.addEventListener("click", function (e) {
+        e.stopPropagation();
+        if (currentIndex < itemsData.length - 1) {
+          addNextItem();
+        } else {
+          scatterAndVanish();
+        }
+      });
+      return container;
+    }
+
+    /* -------------------------------
+       centerOnElement Function
+       ------------------------------- */
+    function centerOnElement(el) {
+      const rect = el.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2 + window.pageXOffset;
+      const centerY = rect.top + rect.height / 2 + window.pageYOffset;
+      window.scrollTo({
+        left: centerX - window.innerWidth / 2,
+        top: centerY - window.innerHeight / 2,
+        behavior: "smooth"
+      });
+    }
+
+    /* -------------------------------
+       addNextItem Function
+       ------------------------------- */
+    function addNextItem() {
+      if (currentIndex < itemsData.length - 1) {
+        currentIndex++;
+
+        let customOffset = 0;
+        if (!itemsData[currentIndex].src) {
+          if (itemsData[currentIndex].id === 8) {
+            customOffset = -50;
+          } else if (itemsData[currentIndex].id === 9) {
+            customOffset = -100;
+          } else if (itemsData[currentIndex].id === 10) {
+            customOffset = -200;
+          }
+        }
+
+        let newY = lastY + estimatedItemHeight + gap + customOffset;
+        newY = Math.max(0, newY);
+        console.log("New Y for item " + itemsData[currentIndex].id + ": " + newY);
+
+        let newX = patternX[currentIndex];
+        if (!itemsData[currentIndex].src) {
+          if (itemsData[currentIndex].id === 8) {
+            newX = baseX - 300;
+          } else if (itemsData[currentIndex].id === 9) {
+            newX = baseX + 400;
+          } else if (itemsData[currentIndex].id === 10) {
+            newX = baseX - 100;
+          }
+        }
+
+        lastY = newY;
+        const newContainer = createItemContainer(itemsData[currentIndex], newX, newY);
+        mainContainer.appendChild(newContainer);
+        centerOnElement(newContainer);
+
+        const bottom = newY + estimatedItemHeight + gap;
+        if (bottom > mainContainer.offsetHeight) {
+          mainContainer.style.height = bottom + "px";
+        }
+        generateBackgroundSquares(2);
+      }
+    }
+
+    /* -------------------------------
+       scatterAndVanish Function
+       ------------------------------- */
+    function scatterAndVanish() {
+      const items = document.querySelectorAll(".image-container");
+      items.forEach(item => {
+        const dx = (Math.random() - 0.5) * 200;
+        const dy = (Math.random() - 0.5) * 200;
+        item.style.transition = "transform 30s, opacity 10s";
+        item.style.transform = `translate(${dx}px, ${dy}px)`;
+        item.style.opacity = "0";
+      });
+      setTimeout(() => { mainContainer.innerHTML = ""; }, 15000);
+    }
+
+    /* Global variable for vertical positioning */
+    let lastY;
+
+    /* -------------------------------
+       Initial Load
+       ------------------------------- */
+    window.onload = function () {
+      // Set maxImageWidth based on viewport size:
+      maxImageWidth = window.innerWidth < 500 ? window.innerWidth * 0.9 : 400;
+      baseX = window.innerWidth / 2 - maxImageWidth / 2;
+      patternX = [
+        baseX,                        // Item 1
+        baseX + 0.6 * maxImageWidth,  // Item 2
+        baseX - 0.6 * maxImageWidth,  // Item 3
+        baseX,                        // Item 4
+        baseX + 0.6 * maxImageWidth,  // Item 5
+        baseX - 0.6 * maxImageWidth,  // Item 6
+        baseX,                        // Item 7
+        baseX,                        // Placeholder for item 8 (will be overridden)
+        baseX,                        // Placeholder for item 9
+        baseX                         // Placeholder for item 10
+      ];
+      lastY = window.innerHeight / 2 - estimatedItemHeight / 2;
+      const firstContainer = createItemContainer(itemsData[0], patternX[0], lastY);
+      mainContainer.appendChild(firstContainer);
+      centerOnElement(firstContainer);
+      mainContainer.style.height = (lastY + estimatedItemHeight + gap) + "px";
+    };
+
+    /* -------------------------------
+       Additional Hover Effect for Item 5
+       ------------------------------- */
+    document.addEventListener("mouseover", function (e) {
+      const overlay = e.target.closest(".overlay");
+      if (overlay && overlay.parentElement.querySelector("img")) {
+        const imgAlt = overlay.parentElement.querySelector("img").alt;
+        if (imgAlt.toLowerCase().includes("boys")) {
+          overlay.querySelectorAll("span").forEach(span => {
+            if (!span.classList.contains("no-float")) span.classList.add("float");
+          });
+          setTimeout(() => {
+            overlay.querySelectorAll("span").forEach(span => { span.classList.remove("float"); });
+          }, 3000);
+        }
+      }
+    });
   </script>
 </body>
 

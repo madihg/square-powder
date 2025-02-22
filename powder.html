@@ -72,11 +72,11 @@
       left: 0;
       width: 100%;
       height: 100%;
+      background-color: black; /* Underlying black background */
       background-size: cover;
       background-position: center;
-      background-color: black; /* Ensure black background when no image is present */
       opacity: 0;
-      transition: opacity 2s ease-in-out; /* Increased duration for smoother fading */
+      transition: opacity 2s ease-in-out; /* Smoother fade effect */
       z-index: 1;
     }
   </style>
@@ -89,7 +89,7 @@
     <div class="header-text">Exclusive Interview With Artist & Agent Provocateur Hassan Kayk X Upsiders</div>
   </div>
 
-  <!-- Background Image -->
+  <!-- Background Image Element -->
   <div id="bg-image" class="bg-image"></div>
 
   <!-- Scrolling Text Container -->
@@ -134,7 +134,7 @@
     const container = document.getElementById("text-container");
     const bgImage = document.getElementById("bg-image");
 
-    // Split and create text lines with optional image data
+    // Split text data into individual lines and create DOM elements.
     const lines = textData.trim().split("\n").map(line => line.trim());
     lines.forEach((line) => {
       const div = document.createElement("div");
@@ -154,28 +154,30 @@
     function updateVisibility() {
       const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
-      let activeImage = "";
+      let lastVisibleLine = null;
 
-      // Determine visibility and active image for the current scroll position
+      // Determine which text lines are visible.
       textLines.forEach((line, index) => {
         if (scrollY >= index * windowHeight * 0.5) {
           line.style.opacity = "1";
-          if (line.dataset.image) {
-            activeImage = line.dataset.image;
-          }
+          lastVisibleLine = line;
         } else {
           line.style.opacity = "0";
         }
       });
 
-      // If an image is active, set it with smooth fade in; otherwise, fade out to show black background.
+      // If the last visible line has an associated image, use it; otherwise, revert to black.
+      let activeImage = "";
+      if (lastVisibleLine && lastVisibleLine.dataset.image) {
+        activeImage = lastVisibleLine.dataset.image;
+      }
+
       if (activeImage) {
         bgImage.style.backgroundImage = `url(${activeImage})`;
         bgImage.style.opacity = "0.3";
       } else {
-        // Optionally remove the background image if desired:
-        bgImage.style.backgroundImage = 'none';
-        bgImage.style.opacity = "1"; // Fully visible so the black background-color shows
+        bgImage.style.backgroundImage = "none"; // Removes any previously set image.
+        bgImage.style.opacity = "1"; // Fully display the black background.
       }
     }
 
