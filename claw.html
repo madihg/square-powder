@@ -4,17 +4,25 @@
   <meta charset="UTF-8" />
   <title>DragControls Example</title>
   <style>
-    body { margin: 0; overflow: hidden; }
-    canvas { display: block; }
+    body { 
+      margin: 0; 
+      overflow: hidden; 
+      background: #000; /* Fallback background color */
+    }
+    canvas { 
+      display: block; 
+    }
     #info {
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 33%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       color: #fff;
       background: rgba(0, 0, 0, 0.5);
       padding: 8px 12px;
       border-radius: 4px;
-      font-family: Arial, sans-serif;
+      font-family: 'Times New Roman', serif;
+      font-size: 2em;
       pointer-events: none;
     }
   </style>
@@ -64,7 +72,7 @@
       // Create renderer
       renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setClearColor(0x444444);
+      renderer.setClearColor(0x000000); // Set background to black
       document.body.appendChild(renderer.domElement);
 
       // Create camera
@@ -81,7 +89,7 @@
       loader.load('/claw.glb', function(gltf) {
           object = gltf.scene;
           object.position.set(0, 0, 0);
-          object.scale.set(1, 1, 1);
+          object.scale.set(0.5, 0.5, 0.5); // Reduced scale for a smaller appearance
           scene.add(object);
 
           // Create DragControls only after the object is loaded
