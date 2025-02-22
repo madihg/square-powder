@@ -57,6 +57,28 @@
         height: auto;
       }
     }
+    /* Fixed bottom-left toggling box */
+    .bottom-left-box {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background-color: white;
+      border: 1px solid black;
+      padding: 10px;
+      cursor: pointer;
+      font-family: "Courier New", Courier, monospace;
+      font-weight: normal;
+      z-index: 1000;
+    }
+    .bottom-left-box .plus {
+      display: block;
+    }
+    .bottom-left-box .text-box {
+      display: none;
+    }
+    .bottom-left-box .text-box.active {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -107,6 +129,28 @@
       window.open('claw.html', '_blank', 'width=800,height=600,left=700,top=200,toolbar=no,scrollbars=no,resizable=yes');
       return false;
     }
+  </script>
+  
+  <!-- Fixed bottom-left toggling box -->
+  <div class="bottom-left-box" id="bottomLeftBox">
+    <div class="plus">+</div>
+    <div class="text-box">
+      <p>A small computational poem by (<a href="https://www.instagram.com/yalla_halim/" target="_blank">@yalla_halim</a>)</p>
+    </div>
+  </div>
+  
+  <script>
+    document.getElementById("bottomLeftBox").addEventListener("click", function () {
+      var plus = this.querySelector(".plus");
+      var textBox = this.querySelector(".text-box");
+      if (plus.textContent.trim() === "+") {
+        plus.textContent = "x";
+        textBox.classList.add("active");
+      } else {
+        plus.textContent = "+";
+        textBox.classList.remove("active");
+      }
+    });
   </script>
 </body>
 </html>
