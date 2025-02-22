@@ -63,34 +63,49 @@
   <div class="container">
     <!-- First Image with caption "square" -->
     <div class="image-box">
-      <a href="square.html" onclick="return showCaption(this)">
+      <a href="square.html" onclick="return openSquareWindow()">
         <img src="assets/square.png" alt="Square Image">
       </a>
-      <div class="caption">square</div>
+      <div class="caption" id="squareCaption">square</div>
     </div>
     <!-- Second Image with caption "powder" -->
     <div class="image-box">
-      <a href="powder.html" onclick="return showCaption(this)">
+      <a href="powder.html" onclick="return openPowderWindow()">
         <img src="assets/powder.jpg" alt="Powder Image">
       </a>
-      <div class="caption">powder</div>
+      <div class="caption" id="powderCaption">powder</div>
     </div>
     <!-- Third Image with caption "claw" -->
     <div class="image-box">
-      <a href="claw.html" onclick="return showCaption(this)">
+      <a href="claw.html" onclick="return openClawWindow()">
         <img src="assets/claw.png" alt="Claw Image">
       </a>
-      <div class="caption">claw</div>
+      <div class="caption" id="clawCaption">claw</div>
     </div>
   </div>
   <script>
-    // Reveals the caption below the image and opens the link in a new window
-    function showCaption(anchor) {
-      var caption = anchor.parentElement.querySelector('.caption');
-      caption.style.display = 'block';
-      // Use '_blank' to open a new window every time
-      window.open(anchor.href, '_blank', 'toolbar=no,scrollbars=yes,resizable=yes,width=800,height=600');
-      return false; // Prevent default navigation
+    function openSquareWindow() {
+      // Display the caption for "square"
+      document.getElementById('squareCaption').style.display = 'block';
+      // Opens the square.html page with a specific size and position
+      window.open('square.html', '_blank', 'width=1000,height=800,left=50,top=150,toolbar=no,scrollbars=no,resizable=yes');
+      return false; // Prevents the default navigation
+    }
+    
+    function openPowderWindow() {
+      // Display the caption for "powder"
+      document.getElementById('powderCaption').style.display = 'block';
+      // Opens the powder.html page with its own size and position
+      window.open('powder.html', '_blank', 'width=600,height=400,left=50,top=100,toolbar=no,scrollbars=no,resizable=yes');
+      return false;
+    }
+    
+    function openClawWindow() {
+      // Display the caption for "claw"
+      document.getElementById('clawCaption').style.display = 'block';
+      // Opens the claw.html page with a different size and position
+      window.open('claw.html', '_blank', 'width=800,height=600,left=100,top=200,toolbar=no,scrollbars=no,resizable=yes');
+      return false;
     }
   </script>
 </body>

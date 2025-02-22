@@ -2,150 +2,184 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scrolling Text with Images</title>
-    <style>
-        body {
-            font-family: 'Times New Roman', serif;
-            font-style: italic;
-            margin: 0;
-            padding: 0;
-            background-color: black;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow-y: scroll;
-            position: relative;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scrolling Text with Header</title>
+  <style>
+    body {
+      font-family: 'Times New Roman', serif;
+      font-style: italic;
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      color: white;
+      overflow-y: scroll;
+      position: relative;
+    }
 
-        .container {
-            position: relative;
-            width: 80%;
-            max-width: 600px;
-            padding-top: 50vh;
-        }
+    /* Header Section Styles */
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 20px;
+      background-color: #111; /* Optional background for header contrast */
+    }
 
-        .line {
-            font-size: 24px;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            position: relative;
-            z-index: 2;
-        }
+    .header-image {
+      width: 200px; /* Adjust as needed */
+      height: auto;
+    }
 
-        .visible {
-            opacity: 1;
-        }
+    .header-text {
+      font-size: 24px;
+      margin-left: 20px;
+      /* Provide text in title case directly */
+    }
 
-        .bg-image {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            z-index: 1;
-        }
-    </style>
+    @media screen and (max-width: 600px) {
+      .header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .header-text {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+    }
+
+    /* Scrolling Text Container Styles */
+    .container {
+      position: relative;
+      width: 80%;
+      max-width: 600px;
+      margin: 0 auto;
+      padding-top: 50vh; /* Adjusts the starting position of the scrolling text */
+    }
+
+    .line {
+      font-size: 24px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      position: relative;
+      z-index: 2;
+      margin-top: 50vh;
+    }
+
+    .bg-image {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      z-index: 1;
+    }
+  </style>
 </head>
 
 <body>
-    <div id="bg-image" class="bg-image"></div>
-    <div class="container" id="text-container"></div>
+  <!-- Header Section -->
+  <div class="header">
+    <!-- Replace the src value with the path to your header image -->
+    <img src="assets/magazine.jpg" alt="Header Image" class="header-image">
+    <!-- Header text provided in title case -->
+    <div class="header-text">Exclusive Interview With Artist & Agent Provocateur Hassan Kayk X Upsiders</div>
+  </div>
 
-    <script>
-        const textData = `
-            "My reputation as an exhibitionist
-            and a provocateur started a few years ago
-            I called my show at the Serpentine (assets/serpentine.jpg)
-            "Portrait of the artist as a young man
-            on creative
-            and glutamine
-            and caffeine anydrous"
-            I set up a gym in the gallery (assets/gymp.jpg)
-            I brought my powders and supplements (assets/powders.jpg)
-            worked out every day as visitors watched (assets/visitors.jpg)
-            my practice involves becoming the human rat
-            the circus freak
-            the zoo animal
-            I put on display that which goes into our attempt 
-            to infiltrate community
-            press our connection with the weight (assets/press.jpg)
-            of our bodies, the size 
-            of our thoughts, lock in 
-            belonging
-            My obliques are the art (assets/obliques.jpg)
-            My lats the Mona Lisa (assets/lats.jpg)
-            One evening, I took 3g of MDMA (assets/mdma.jpg)
-            invited folks to observe the 6-hour trip (assets/craving.jpg)
-            as my fibers longed to touch their skins (assets/craving.jpg)
-            My body is another temple (assets/temple.jpg)
-            where boyhood echoes (assets/temple.jpg)
-            echoes (assets/temple.jpg)
-            echoes (assets/temple.jpg)
-            against walls of flesh
-            craving sweat to quench its thirst
-            and one day I will grow 
-            large enough to be everywhere"
-        `;
+  <!-- Background Image -->
+  <div id="bg-image" class="bg-image"></div>
 
-        const container = document.getElementById("text-container");
-        const bgImage = document.getElementById("bg-image");
+  <!-- Scrolling Text Container -->
+  <div class="container" id="text-container"></div>
 
-        const lines = textData.trim().split("\n").map(line => line.trim());
+  <script>
+    const textData = `
+      "My reputation as an exhibitionist
+      and a provocateur started a few years ago
+      I called my show at the Serpentine (assets/serpentine.jpg)
+      "Portrait of the artist as a young man
+      on creative
+      and glutamine
+      and caffeine anydrous"
+      I set up a gym in the gallery (assets/gymp.jpg)
+      I brought my powders and supplements (assets/powders.jpg)
+      worked out every day as visitors watched (assets/visitors.jpg)
+      my practice involves becoming the human rat
+      the circus freak
+      the zoo animal
+      I put on display that which goes into our attempt 
+      to infiltrate community
+      press our connection with the weight (assets/press.jpg)
+      of our bodies, the size 
+      of our thoughts, lock in 
+      belonging
+      My obliques are the art (assets/obliques.jpg)
+      My lats the Mona Lisa (assets/lats.jpg)
+      One evening, I took 3g of MDMA (assets/mdma.jpg)
+      invited folks to observe the 6-hour trip (assets/craving.jpg)
+      as my fibers longed to touch their skins (assets/craving.jpg)
+      My body is another temple (assets/temple.jpg)
+      where boyhood echoes (assets/temple.jpg)
+      echoes (assets/temple.jpg)
+      echoes (assets/temple.jpg)
+      against walls of flesh
+      craving sweat to quench its thirst
+      and one day I will grow 
+      large enough to be everywhere"
+    `;
 
-        lines.forEach((line, index) => {
-            const div = document.createElement("div");
-            div.classList.add("line");
-            let imgMatch = line.match(/\((.*?)\)/);
-            if (imgMatch) {
-                div.textContent = line.replace(/\(.*?\)/, "");
-                div.dataset.image = imgMatch[1];
-            } else {
-                div.textContent = line;
-            }
-            div.style.opacity = "0";
-            div.style.marginTop = "50vh";
-            container.appendChild(div);
-        });
+    const container = document.getElementById("text-container");
+    const bgImage = document.getElementById("bg-image");
 
-        const textLines = document.querySelectorAll(".line");
+    const lines = textData.trim().split("\n").map(line => line.trim());
 
-        function updateVisibility() {
-            const scrollY = window.scrollY;
-            const windowHeight = window.innerHeight;
-            let activeImage = "";
+    lines.forEach((line, index) => {
+      const div = document.createElement("div");
+      div.classList.add("line");
+      let imgMatch = line.match(/\((.*?)\)/);
+      if (imgMatch) {
+        div.textContent = line.replace(/\(.*?\)/, "");
+        div.dataset.image = imgMatch[1];
+      } else {
+        div.textContent = line;
+      }
+      container.appendChild(div);
+    });
 
-            textLines.forEach((line, index) => {
-                const lineTop = line.offsetTop;
-                if (scrollY >= index * windowHeight * 0.5) {
-                    line.style.opacity = "1";
-                    if (line.dataset.image) {
-                        activeImage = line.dataset.image;
-                    }
-                } else {
-                    line.style.opacity = "0";
-                }
-            });
+    const textLines = document.querySelectorAll(".line");
 
-            if (activeImage) {
-                bgImage.style.backgroundImage = `url(${activeImage})`;
-                bgImage.style.opacity = "0.3";
-            } else {
-                bgImage.style.opacity = "0";
-            }
+    function updateVisibility() {
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      let activeImage = "";
+
+      textLines.forEach((line, index) => {
+        if (scrollY >= index * windowHeight * 0.5) {
+          line.style.opacity = "1";
+          if (line.dataset.image) {
+            activeImage = line.dataset.image;
+          }
+        } else {
+          line.style.opacity = "0";
         }
+      });
 
-        window.addEventListener("scroll", updateVisibility);
-        updateVisibility();
-    </script>
+      if (activeImage) {
+        bgImage.style.backgroundImage = `url(${activeImage})`;
+        bgImage.style.opacity = "0.3";
+      } else {
+        bgImage.style.opacity = "0";
+      }
+    }
+
+    window.addEventListener("scroll", updateVisibility);
+    updateVisibility();
+  </script>
 </body>
 
 </html>
