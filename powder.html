@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,12 +75,11 @@
       background-size: cover;
       background-position: center;
       opacity: 0;
-      transition: opacity 2s ease-in-out; /* Smoother fade effect */
+      transition: opacity 2s ease-in-out; /* Smooth fade effect */
       z-index: 1;
     }
   </style>
 </head>
-
 <body>
   <!-- Header Section -->
   <div class="header">
@@ -134,7 +132,7 @@
     const container = document.getElementById("text-container");
     const bgImage = document.getElementById("bg-image");
 
-    // Split text data into individual lines and create DOM elements.
+    // Split text data into lines and create DOM elements.
     const lines = textData.trim().split("\n").map(line => line.trim());
     lines.forEach((line) => {
       const div = document.createElement("div");
@@ -152,32 +150,29 @@
     const textLines = document.querySelectorAll(".line");
 
     function updateVisibility() {
-      const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
-      let lastVisibleLine = null;
-
-      // Determine which text lines are visible.
-      textLines.forEach((line, index) => {
-        if (scrollY >= index * windowHeight * 0.5) {
+      let activeImage = "";
+      
+      // For each line, check if the vertical center of the viewport is within its bounding rectangle.
+      textLines.forEach((line) => {
+        const rect = line.getBoundingClientRect();
+        if (rect.top <= windowHeight / 2 && rect.bottom >= windowHeight / 2) {
           line.style.opacity = "1";
-          lastVisibleLine = line;
+          if (line.dataset.image) {
+            activeImage = line.dataset.image;
+          }
         } else {
           line.style.opacity = "0";
         }
       });
-
-      // If the last visible line has an associated image, use it; otherwise, revert to black.
-      let activeImage = "";
-      if (lastVisibleLine && lastVisibleLine.dataset.image) {
-        activeImage = lastVisibleLine.dataset.image;
-      }
-
+      
+      // Set the background image based on the active line.
       if (activeImage) {
         bgImage.style.backgroundImage = `url(${activeImage})`;
         bgImage.style.opacity = "0.3";
       } else {
-        bgImage.style.backgroundImage = "none"; // Removes any previously set image.
-        bgImage.style.opacity = "1"; // Fully display the black background.
+        bgImage.style.backgroundImage = "none";
+        bgImage.style.opacity = "1"; // Fully black background.
       }
     }
 
@@ -185,5 +180,4 @@
     updateVisibility();
   </script>
 </body>
-
 </html>
