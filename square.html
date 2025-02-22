@@ -108,9 +108,15 @@
        CSS Animations
        ------------------------------- */
     @keyframes float {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-      100% { transform: translateY(0); }
+      0% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+      100% {
+        transform: translateY(0);
+      }
     }
 
     .float {
@@ -118,12 +124,24 @@
     }
 
     @keyframes glitch {
-      0% { opacity: 1; }
-      20% { opacity: 0; }
-      40% { opacity: 1; }
-      60% { opacity: 0; }
-      80% { opacity: 1; }
-      100% { opacity: 1; }
+      0% {
+        opacity: 1;
+      }
+      20% {
+        opacity: 0;
+      }
+      40% {
+        opacity: 1;
+      }
+      60% {
+        opacity: 0;
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 1;
+      }
     }
 
     .glitch {
@@ -131,8 +149,14 @@
     }
 
     @keyframes grow {
-      from { font-size: 20px; font-weight: 50; }
-      to { font-size: 60px; font-weight: 900; }
+      from {
+        font-size: 20px;
+        font-weight: 50;
+      }
+      to {
+        font-size: 60px;
+        font-weight: 900;
+      }
     }
 
     .grow {
@@ -140,11 +164,21 @@
     }
 
     @keyframes shake {
-      0% { transform: translate(0, 0); }
-      25% { transform: translate(-10px, 0); }
-      50% { transform: translate(10px, 0); }
-      75% { transform: translate(-10px, 0); }
-      100% { transform: translate(0, 0); }
+      0% {
+        transform: translate(0, 0);
+      }
+      25% {
+        transform: translate(-10px, 0);
+      }
+      50% {
+        transform: translate(10px, 0);
+      }
+      75% {
+        transform: translate(-10px, 0);
+      }
+      100% {
+        transform: translate(0, 0);
+      }
     }
 
     .shake {
@@ -162,6 +196,24 @@
 
     .hover-sharper:hover {
       font-weight: 900;
+    }
+
+    /* -------------------------------
+       Toggle Box Styles
+       ------------------------------- */
+    #toggle-box {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(255, 255, 255, 0.8);
+      color: #000;
+      border: 1px solid #000;
+      padding: 10px;
+      font-family: "Courier New", Courier, monospace;
+      font-weight: normal;
+      cursor: pointer;
+      z-index: 100;
+      user-select: none;
     }
     /* -------------------------------
        End of CSS
@@ -201,10 +253,7 @@
 
     /* -------------------------------
        Function: updateMainContainerDimensions
-       -------------------------------
-       Recalculates the leftmost and rightmost positions of all item containers
-       and updates the main container's width and left margin so that all items are visible.
-    */
+       ------------------------------- */
     function updateMainContainerDimensions() {
       const containers = document.querySelectorAll(".image-container");
       let minLeft = Infinity;
@@ -215,10 +264,8 @@
         if (left < minLeft) minLeft = left;
         if (left + width > maxRight) maxRight = left + width;
       });
-      // Compute new width for the canvas
       const newWidth = maxRight - minLeft;
       mainContainer.style.width = newWidth + "px";
-      // Shift the container so that the leftmost item aligns with the viewport's left edge
       mainContainer.style.marginLeft = -minLeft + "px";
     }
 
@@ -481,7 +528,6 @@
           mainContainer.style.height = bottom + "px";
         }
         generateBackgroundSquares(2);
-        // Update the container dimensions after adding an item.
         updateMainContainerDimensions();
       }
     }
@@ -498,14 +544,15 @@
         item.style.transform = `translate(${dx}px, ${dy}px)`;
         item.style.opacity = "0";
       });
-      setTimeout(() => { mainContainer.innerHTML = ""; }, 15000);
+      setTimeout(() => {
+        mainContainer.innerHTML = "";
+      }, 15000);
     }
 
     /* -------------------------------
        Initial Load
        ------------------------------- */
     window.onload = function () {
-      // Set maxImageWidth based on viewport size:
       maxImageWidth = window.innerWidth < 500 ? window.innerWidth * 0.9 : 400;
       baseX = window.innerWidth / 2 - maxImageWidth / 2;
       patternX = [
@@ -525,7 +572,6 @@
       mainContainer.appendChild(firstContainer);
       centerOnElement(firstContainer);
       mainContainer.style.height = (lastY + estimatedItemHeight + gap) + "px";
-      // Update canvas dimensions initially
       updateMainContainerDimensions();
     };
 
@@ -541,9 +587,30 @@
             if (!span.classList.contains("no-float")) span.classList.add("float");
           });
           setTimeout(() => {
-            overlay.querySelectorAll("span").forEach(span => { span.classList.remove("float"); });
+            overlay.querySelectorAll("span").forEach(span => {
+              span.classList.remove("float");
+            });
           }, 3000);
         }
+      }
+    });
+
+    /* -------------------------------
+       Toggle Box for Poem Credit
+       ------------------------------- */
+    const toggleBox = document.createElement("div");
+    toggleBox.id = "toggle-box";
+    toggleBox.innerHTML = "+";
+    toggleBox.dataset.expanded = "false";
+    document.body.appendChild(toggleBox);
+
+    toggleBox.addEventListener("click", function () {
+      if (toggleBox.dataset.expanded === "false") {
+        toggleBox.dataset.expanded = "true";
+        toggleBox.innerHTML = "A small computational poem by (<a href='https://www.instagram.com/yalla_halim' target='_blank' style='color: inherit; text-decoration: none;'>@yalla_halim</a>)";
+      } else {
+        toggleBox.dataset.expanded = "false";
+        toggleBox.innerHTML = "+";
       }
     });
   </script>

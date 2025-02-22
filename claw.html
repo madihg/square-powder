@@ -26,10 +26,33 @@
       font-size: 2em;
       pointer-events: none;
     }
+    /* Styling for the fixed bottom-left toggle box */
+    #toggle-box {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      font-family: Courier, monospace;
+      font-size: 1.2em;
+      cursor: pointer;
+      user-select: none;
+      text-align: center;
+    }
+    #toggle-box a {
+      color: #fff;
+      text-decoration: underline;
+      font-family: Courier, monospace;
+      font-weight: normal;
+    }
   </style>
 </head>
 <body>
   <div id="info">The hair clip is a clawing</div>
+  <!-- Fixed toggle box -->
+  <div id="toggle-box">+</div>
 
   <!-- Include three.js -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
@@ -112,12 +135,29 @@
 
     function animate() {
       requestAnimationFrame(animate);
-      // No automatic rotation; now fully controlled by OrbitControls
+      // Fully controlled by OrbitControls
       renderer.render(scene, camera);
     }
 
     init();
     animate();
+  </script>
+
+  <script>
+    // Toggle box functionality
+    const toggleBox = document.getElementById('toggle-box');
+    let expanded = false;
+
+    toggleBox.addEventListener('click', function() {
+      expanded = !expanded;
+      if(expanded) {
+        // When expanded, show an 'x' and the descriptive text with a link
+        toggleBox.innerHTML = 'x<br><span style="font-family: Courier, monospace; font-weight: normal;">A small computational poem by <a href="https://www.instagram.com/yalla_halim" target="_blank"> @yalla_halim</a></span>';
+      } else {
+        // When collapsed, show only a plus sign
+        toggleBox.innerHTML = '+';
+      }
+    });
   </script>
 </body>
 </html>

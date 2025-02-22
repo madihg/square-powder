@@ -48,11 +48,49 @@
       transition: opacity 1s ease-in-out;
       z-index: 1;
     }
+
+    /* Toggle box styling */
+    #toggle-box {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 12px;
+      border: 1px solid white;
+      font-family: "Courier New", Courier, monospace;
+      font-weight: normal;
+      cursor: pointer;
+      user-select: none;
+      z-index: 10;
+    }
+
+    #toggle-box .toggle-icon {
+      font-size: 20px;
+    }
+
+    #toggle-box .toggle-content {
+      display: none;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    #toggle-box.expanded .toggle-content {
+      display: block;
+    }
   </style>
 </head>
 <body>
   <div id="bg-image" class="bg-image"></div>
   <div class="container" id="text-container"></div>
+
+  <!-- Fixed bottom-left toggle box -->
+  <div id="toggle-box">
+    <span class="toggle-icon">+</span>
+    <div class="toggle-content">
+      A small computational poem by (<a href="https://www.instagram.com/yalla_halim/" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration: none;">@yalla_halim</a>)
+    </div>
+  </div>
 
   <script>
     const textData = `
@@ -97,7 +135,7 @@
     const container = document.getElementById("text-container");
     const bgImage = document.getElementById("bg-image");
 
-    // Split the text into lines and create a div for each.
+    // Create text lines and attach image data if available.
     const lines = textData.trim().split("\n").map(line => line.trim());
     lines.forEach((line) => {
       const div = document.createElement("div");
@@ -109,7 +147,6 @@
       } else {
         div.textContent = line;
       }
-      // Add vertical spacing so that lines appear one after the other.
       div.style.marginTop = "50vh";
       container.appendChild(div);
     });
@@ -123,11 +160,8 @@
       
       textLines.forEach((line) => {
         const rect = line.getBoundingClientRect();
-        // Check if the line is visible (any part of it is within the viewport)
         if (rect.bottom >= 0 && rect.top <= windowHeight) {
-          // Reveal visible text lines.
           line.style.opacity = "1";
-          // Calculate how close the line's center is to the viewport center.
           const lineCenter = (rect.top + rect.bottom) / 2;
           const distance = Math.abs(lineCenter - windowHeight / 2);
           if (distance < closestDistance) {
@@ -139,7 +173,6 @@
         }
       });
       
-      // If an active image exists from the most centered visible line, fade it in.
       if (activeImage) {
         bgImage.style.backgroundImage = `url(${activeImage})`;
         bgImage.style.opacity = "0.3";
@@ -151,6 +184,19 @@
 
     window.addEventListener("scroll", updateVisibility);
     updateVisibility();
+
+    // Toggle box functionality.
+    const toggleBox = document.getElementById('toggle-box');
+    const toggleIcon = toggleBox.querySelector('.toggle-icon');
+
+    toggleBox.addEventListener('click', () => {
+      toggleBox.classList.toggle('expanded');
+      if (toggleBox.classList.contains('expanded')) {
+        toggleIcon.textContent = 'x';
+      } else {
+        toggleIcon.textContent = '+';
+      }
+    });
   </script>
 </body>
 </html>
