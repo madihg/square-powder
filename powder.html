@@ -22,18 +22,17 @@
       display: flex;
       align-items: center;
       padding: 20px;
-      background-color: #111; /* Optional background for header contrast */
+      background-color: #111;
     }
 
     .header-image {
-      width: 200px; /* Adjust as needed */
+      width: 200px;
       height: auto;
     }
 
     .header-text {
       font-size: 24px;
       margin-left: 20px;
-      /* Provide text in title case directly */
     }
 
     @media screen and (max-width: 600px) {
@@ -41,7 +40,6 @@
         flex-direction: column;
         text-align: center;
       }
-
       .header-text {
         margin-left: 0;
         margin-top: 10px;
@@ -54,7 +52,7 @@
       width: 80%;
       max-width: 600px;
       margin: 0 auto;
-      padding-top: 50vh; /* Adjusts the starting position of the scrolling text */
+      padding-top: 50vh;
     }
 
     .line {
@@ -67,6 +65,7 @@
       margin-top: 50vh;
     }
 
+    /* Background Image Styles */
     .bg-image {
       position: fixed;
       top: 0;
@@ -75,8 +74,9 @@
       height: 100%;
       background-size: cover;
       background-position: center;
+      background-color: black; /* Ensure black background when no image is present */
       opacity: 0;
-      transition: opacity 1s ease-in-out;
+      transition: opacity 2s ease-in-out; /* Increased duration for smoother fading */
       z-index: 1;
     }
   </style>
@@ -85,9 +85,7 @@
 <body>
   <!-- Header Section -->
   <div class="header">
-    <!-- Replace the src value with the path to your header image -->
     <img src="assets/magazine.jpg" alt="Header Image" class="header-image">
-    <!-- Header text provided in title case -->
     <div class="header-text">Exclusive Interview With Artist & Agent Provocateur Hassan Kayk X Upsiders</div>
   </div>
 
@@ -136,12 +134,12 @@
     const container = document.getElementById("text-container");
     const bgImage = document.getElementById("bg-image");
 
+    // Split and create text lines with optional image data
     const lines = textData.trim().split("\n").map(line => line.trim());
-
-    lines.forEach((line, index) => {
+    lines.forEach((line) => {
       const div = document.createElement("div");
       div.classList.add("line");
-      let imgMatch = line.match(/\((.*?)\)/);
+      const imgMatch = line.match(/\((.*?)\)/);
       if (imgMatch) {
         div.textContent = line.replace(/\(.*?\)/, "");
         div.dataset.image = imgMatch[1];
@@ -158,6 +156,7 @@
       const windowHeight = window.innerHeight;
       let activeImage = "";
 
+      // Determine visibility and active image for the current scroll position
       textLines.forEach((line, index) => {
         if (scrollY >= index * windowHeight * 0.5) {
           line.style.opacity = "1";
@@ -169,11 +168,14 @@
         }
       });
 
+      // If an image is active, set it with smooth fade in; otherwise, fade out to show black background.
       if (activeImage) {
         bgImage.style.backgroundImage = `url(${activeImage})`;
         bgImage.style.opacity = "0.3";
       } else {
-        bgImage.style.opacity = "0";
+        // Optionally remove the background image if desired:
+        bgImage.style.backgroundImage = 'none';
+        bgImage.style.opacity = "1"; // Fully visible so the black background-color shows
       }
     }
 
