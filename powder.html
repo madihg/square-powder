@@ -2,69 +2,65 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scrolling Text with Images</title>
-    <style>
-        body {
-            font-family: 'Times New Roman', serif;
-            font-style: italic;
-            margin: 0;
-            padding: 0;
-            background-color: black;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow-y: scroll;
-            position: relative;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scrolling Text with Images</title>
+  <style>
+    body {
+      font-family: 'Times New Roman', serif;
+      font-style: italic;
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow-y: scroll;
+      position: relative;
+    }
 
-        .container {
-            position: relative;
-            width: 80%;
-            max-width: 600px;
-            padding-top: 50vh;
-        }
+    .container {
+      position: relative;
+      width: 80%;
+      max-width: 600px;
+      padding-top: 50vh;
+    }
 
-        .line {
-            font-size: 24px;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            position: relative;
-            z-index: 2;
-        }
+    .line {
+      font-size: 24px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      position: relative;
+      z-index: 2;
+    }
 
-        .visible {
-            opacity: 1;
-        }
-
-        .bg-image {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-            z-index: 1;
-        }
-    </style>
+    .bg-image {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      z-index: 1;
+    }
+  </style>
 </head>
 
 <body>
-    <div id="bg-image" class="bg-image"></div>
-    <div class="container" id="text-container"></div>
+  <div id="bg-image" class="bg-image"></div>
+  <div class="container" id="text-container"></div>
 
-    <script>
-        const textData = `
+  <script>
+    const textData = `
       Exclusive Interview (assets/magazine.jpg)
-      With Artist & Agent Provocateur
-      Hassan Kayk X Upsiders
+      With Artist & Agent Provocateur (assets/magazine.jpg)
+      Hassan Kayk X Upsiders (assets/magazine.jpg)
       "My reputation as an exhibitionist
       and a provocateur started a few years ago
       I called my show at the Serpentine (assets/serpentine.jpg)
@@ -83,7 +79,7 @@
       of our thoughts, lock in 
       belonging
       My obliques are the art (assets/obliques.jpg)
-      My lats a De Koenig (assets/lats.jpg)
+      My lats a primal Pollock (assets/lats.jpg)
       One evening, I took 3g of MDMA (assets/mdma.jpg)
       invited folks to observe the 6-hour trip (assets/craving.jpg)
       as my fibers longed to touch their skins (assets/craving.jpg)
@@ -95,58 +91,60 @@
       craving sweat to quench its thirst
       and one day I will grow 
       large enough to be everywhere"
-        `;
+    `;
 
-        const container = document.getElementById("text-container");
-        const bgImage = document.getElementById("bg-image");
+    const container = document.getElementById("text-container");
+    const bgImage = document.getElementById("bg-image");
 
-        const lines = textData.trim().split("\n").map(line => line.trim());
+    // Create text lines and attach dataset for images if available.
+    const lines = textData.trim().split("\n").map(line => line.trim());
+    lines.forEach((line) => {
+      const div = document.createElement("div");
+      div.classList.add("line");
+      const imgMatch = line.match(/\((.*?)\)/);
+      if (imgMatch) {
+        div.textContent = line.replace(/\(.*?\)/, "");
+        div.dataset.image = imgMatch[1];
+      } else {
+        div.textContent = line;
+      }
+      // Space out the lines vertically.
+      div.style.marginTop = "50vh";
+      container.appendChild(div);
+    });
 
-        lines.forEach((line, index) => {
-            const div = document.createElement("div");
-            div.classList.add("line");
-            let imgMatch = line.match(/\((.*?)\)/);
-            if (imgMatch) {
-                div.textContent = line.replace(/\(.*?\)/, "");
-                div.dataset.image = imgMatch[1];
-            } else {
-                div.textContent = line;
-            }
-            div.style.opacity = "0";
-            div.style.marginTop = "50vh";
-            container.appendChild(div);
-        });
+    const textLines = document.querySelectorAll(".line");
 
-        const textLines = document.querySelectorAll(".line");
+    function updateVisibility() {
+      let activeImage = "";
+      const windowHeight = window.innerHeight;
 
-        function updateVisibility() {
-            const scrollY = window.scrollY;
-            const windowHeight = window.innerHeight;
-            let activeImage = "";
-
-            textLines.forEach((line, index) => {
-                const lineTop = line.offsetTop;
-                if (scrollY >= index * windowHeight * 0.5) {
-                    line.style.opacity = "1";
-                    if (line.dataset.image) {
-                        activeImage = line.dataset.image;
-                    }
-                } else {
-                    line.style.opacity = "0";
-                }
-            });
-
-            if (activeImage) {
-                bgImage.style.backgroundImage = `url(${activeImage})`;
-                bgImage.style.opacity = "0.3";
-            } else {
-                bgImage.style.opacity = "0";
-            }
+      textLines.forEach((line) => {
+        // Get the element's bounding rectangle.
+        const rect = line.getBoundingClientRect();
+        // Check if the vertical center of the viewport is within the line's bounds.
+        if (rect.top < windowHeight * 0.5 && rect.bottom > windowHeight * 0.5) {
+          line.style.opacity = "1";
+          if (line.dataset.image) {
+            activeImage = line.dataset.image;
+          }
+        } else {
+          line.style.opacity = "0";
         }
+      });
 
-        window.addEventListener("scroll", updateVisibility);
-        updateVisibility();
-    </script>
+      if (activeImage) {
+        bgImage.style.backgroundImage = `url(${activeImage})`;
+        bgImage.style.opacity = "0.3";
+      } else {
+        bgImage.style.backgroundImage = "none";
+        bgImage.style.opacity = "0";
+      }
+    }
+
+    window.addEventListener("scroll", updateVisibility);
+    updateVisibility();
+  </script>
 </body>
 
 </html>
