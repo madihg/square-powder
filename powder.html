@@ -2,102 +2,66 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scrolling Text with Header</title>
-  <style>
-    body {
-      font-family: 'Times New Roman', serif;
-      font-style: italic;
-      margin: 0;
-      padding: 0;
-      background-color: black;
-      color: white;
-      overflow-y: scroll;
-      position: relative;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrolling Text with Images</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-y: scroll;
+            position: relative;
+        }
 
-    /* Header Section Styles */
-    .header {
-      display: flex;
-      align-items: center;
-      padding: 20px;
-      background-color: #111;
-    }
+        .container {
+            position: relative;
+            width: 80%;
+            max-width: 600px;
+            padding-top: 50vh;
+        }
 
-    .header-image {
-      width: 200px;
-      height: auto;
-    }
+        .line {
+            font-size: 24px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            position: relative;
+            z-index: 2;
+        }
 
-    .header-text {
-      font-size: 24px;
-      margin-left: 20px;
-    }
+        .visible {
+            opacity: 1;
+        }
 
-    @media screen and (max-width: 600px) {
-      .header {
-        flex-direction: column;
-        text-align: center;
-      }
-      .header-text {
-        margin-left: 0;
-        margin-top: 10px;
-      }
-    }
-
-    /* Scrolling Text Container Styles */
-    .container {
-      position: relative;
-      width: 80%;
-      max-width: 600px;
-      margin: 0 auto;
-      padding-top: 50vh;
-    }
-
-    .line {
-      font-size: 24px;
-      text-align: center;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-      position: relative;
-      z-index: 2;
-      margin-top: 50vh;
-    }
-
-    /* Background Image Styles */
-    .bg-image {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: black;
-      background-size: cover;
-      background-position: center;
-      opacity: 0;
-      transition: opacity 2s ease-in-out;
-      z-index: 1;
-    }
-  </style>
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            z-index: 1;
+        }
+    </style>
 </head>
 
 <body>
+    <div id="bg-image" class="bg-image"></div>
+    <div class="container" id="text-container"></div>
 
-  <!-- Header Section -->
-  <div class="header">
-    <img src="assets/magazine.jpg" alt="Header Image" class="header-image">
-    <div class="header-text">Exclusive Interview With Artist & Agent Provocateur Hassan Kayk X Upsiders</div>
-  </div>
-
-  <!-- Background Image Element -->
-  <div id="bg-image" class="bg-image"></div>
-
-  <!-- Scrolling Text Container -->
-  <div class="container" id="text-container"></div>
-
-  <script>
-    const textData = `
+    <script>
+        const textData = `
       Exclusive Interview (assets/magazine.jpg)
       With Artist & Agent Provocateur (assets/magazine.jpg)
       Hassan Kayk X Upsiders (assets/magazine.jpg)
@@ -131,57 +95,58 @@
       craving sweat to quench its thirst
       and one day I will grow 
       large enough to be everywhere"
-    `;
+        `;
 
-    const container = document.getElementById("text-container");
-    const bgImage = document.getElementById("bg-image");
+        const container = document.getElementById("text-container");
+        const bgImage = document.getElementById("bg-image");
 
-    // Split text data into individual lines and create DOM elements.
-    const lines = textData.trim().split("\n").map(line => line.trim());
-    lines.forEach((line) => {
-      const div = document.createElement("div");
-      div.classList.add("line");
-      const imgMatch = line.match(/\((.*?)\)/);
-      if (imgMatch) {
-        div.textContent = line.replace(/\(.*?\)/, "");
-        div.dataset.image = imgMatch[1];
-      } else {
-        div.textContent = line;
-      }
-      container.appendChild(div);
-    });
+        const lines = textData.trim().split("\n").map(line => line.trim());
 
-    const textLines = document.querySelectorAll(".line");
+        lines.forEach((line, index) => {
+            const div = document.createElement("div");
+            div.classList.add("line");
+            let imgMatch = line.match(/\((.*?)\)/);
+            if (imgMatch) {
+                div.textContent = line.replace(/\(.*?\)/, "");
+                div.dataset.image = imgMatch[1];
+            } else {
+                div.textContent = line;
+            }
+            div.style.opacity = "0";
+            div.style.marginTop = "50vh";
+            container.appendChild(div);
+        });
 
-    function updateVisibility() {
-      const scrollY = window.scrollY;
-      const windowHeight = window.innerHeight;
-      let activeImage = "";
+        const textLines = document.querySelectorAll(".line");
 
-      // Use CODE 1's logic for determining visible lines.
-      textLines.forEach((line, index) => {
-        if (scrollY >= index * windowHeight * 0.5) {
-          line.style.opacity = "1";
-          if (line.dataset.image) {
-            activeImage = line.dataset.image;
-          }
-        } else {
-          line.style.opacity = "0";
+        function updateVisibility() {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            let activeImage = "";
+
+            textLines.forEach((line, index) => {
+                const lineTop = line.offsetTop;
+                if (scrollY >= index * windowHeight * 0.5) {
+                    line.style.opacity = "1";
+                    if (line.dataset.image) {
+                        activeImage = line.dataset.image;
+                    }
+                } else {
+                    line.style.opacity = "0";
+                }
+            });
+
+            if (activeImage) {
+                bgImage.style.backgroundImage = `url(${activeImage})`;
+                bgImage.style.opacity = "0.3";
+            } else {
+                bgImage.style.opacity = "0";
+            }
         }
-      });
 
-      if (activeImage) {
-        bgImage.style.backgroundImage = `url(${activeImage})`;
-        bgImage.style.opacity = "0.3";
-      } else {
-        bgImage.style.backgroundImage = "none";
-        bgImage.style.opacity = "0";
-      }
-    }
-
-    window.addEventListener("scroll", updateVisibility);
-    updateVisibility();
-  </script>
+        window.addEventListener("scroll", updateVisibility);
+        updateVisibility();
+    </script>
 </body>
 
 </html>
