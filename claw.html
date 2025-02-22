@@ -7,7 +7,7 @@
     body { 
       margin: 0; 
       overflow: hidden; 
-      background: #000; /* Fallback background color */
+      background: #000; /* Black background */
     }
     canvas { 
       display: block; 
@@ -28,7 +28,7 @@
   </style>
 </head>
 <body>
-  <div id="info">Loading...</div>
+  <div id="info">The hair clip is a clawing</div>
 
   <!-- 1) three.js (r128) -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
@@ -63,7 +63,7 @@
       "A promise from the man he became",
       "this claw is here to guard your heart."
     ];
-    let sentenceIndex = 0;
+    let sentenceIndex = 1; // Start from the second sentence
 
     function init() {
       // Create scene
@@ -72,12 +72,12 @@
       // Create renderer
       renderer = new THREE.WebGLRenderer({ antialias: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setClearColor(0x000000); // Set background to black
+      renderer.setClearColor(0x000000); // Black background for the scene
       document.body.appendChild(renderer.domElement);
 
-      // Create camera
+      // Create camera, zoomed out further
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      camera.position.z = 5;
+      camera.position.z = 10; // Moved further away
 
       // Add an ambient light so the glTF model is lit
       const ambientLight = new THREE.AmbientLight(0xffffff, 1);
@@ -89,7 +89,7 @@
       loader.load('/claw.glb', function(gltf) {
           object = gltf.scene;
           object.position.set(0, 0, 0);
-          object.scale.set(0.5, 0.5, 0.5); // Reduced scale for a smaller appearance
+          object.scale.set(0.3, 0.3, 0.3); // Further reduced scale for a smaller appearance
           scene.add(object);
 
           // Create DragControls only after the object is loaded
@@ -105,7 +105,6 @@
       });
 
       window.addEventListener('resize', onWindowResize, false);
-      infoDiv.innerText = "Scene initialized";
     }
 
     function onWindowResize() {
