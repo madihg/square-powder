@@ -28,10 +28,34 @@
   <!-- 2) DragControls from the same r128 examples folder -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/DragControls.js"></script>
 
-  <!-- 3) Your main script that uses DragControls -->
+  <!-- Optional: GLTFLoader for loading a glb model -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+  <!-- 3) Main Script -->
   <script>
-    let scene, camera, renderer, cube, controls;
+    let scene, camera, renderer, object, controls;
     const infoDiv = document.getElementById('info');
+
+    // Array of sentences to display one at a time.
+    const sentences = [
+      "The hair clip is a clawing",
+      "back of identity",
+      "a re-gathering of selfhood",
+      "I claw my hair up because",
+      "I don't like my hair down",
+      "and I didn't like the flimsy ties",
+      "and I wanted to be a middle-aged",
+      "white woman from Santa Barbara", 
+      "named Janie or Margaret",
+      "and that was the version of manhood", 
+      "that felt right",
+      "a grandeur barely aware of itself", 
+      "borrowing childhood innocence like a pencil",
+      "My claw is a wink at the boy who made it.",
+      "A promise from the man he became",
+      "this claw is here to guard your heart."
+    ];
+    let sentenceIndex = 0;
 
     function init() {
       // Create scene
@@ -47,28 +71,32 @@
       camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
       camera.position.z = 5;
 
-      // Add a basic green cube
-      const geometry = new THREE.BoxGeometry();
-      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-      cube = new THREE.Mesh(geometry, material);
-      scene.add(cube);
+      // Add an ambient light so the glTF model is lit
+      const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+      scene.add(ambientLight);
 
-      // Create DragControls
-      controls = new THREE.DragControls([cube], camera, renderer.domElement);
+      // --- Load a glTF (glb) model ---
+      // Note: Using '/claw.glb' if your file is in the public folder.
+      const loader = new THREE.GLTFLoader();
+      loader.load('/claw.glb', function(gltf) {
+          object = gltf.scene;
+          object.position.set(0, 0, 0);
+          object.scale.set(1, 1, 1);
+          scene.add(object);
 
-      // Add event listeners
-      controls.addEventListener('dragstart', function(event) {
-        infoDiv.innerText = "Placeholder: Object grabbed!";
-      });
-      controls.addEventListener('drag', function(event) {
-        infoDiv.innerText = "";
-      });
-      controls.addEventListener('dragend', function(event) {
-        infoDiv.innerText = "Drag ended";
+          // Create DragControls only after the object is loaded
+          controls = new THREE.DragControls([object], camera, renderer.domElement);
+
+          // When the object is grabbed, display the next sentence.
+          controls.addEventListener('dragstart', function(event) {
+            infoDiv.innerText = sentences[sentenceIndex];
+            sentenceIndex = (sentenceIndex + 1) % sentences.length;
+          });
+      }, undefined, function(error) {
+          console.error(error);
       });
 
       window.addEventListener('resize', onWindowResize, false);
-
       infoDiv.innerText = "Scene initialized";
     }
 
@@ -80,9 +108,10 @@
 
     function animate() {
       requestAnimationFrame(animate);
-      // Rotate the cube to confirm it's visible
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
+      if (object) {
+        object.rotation.x += 0.01;
+        object.rotation.y += 0.01;
+      }
       renderer.render(scene, camera);
     }
 
