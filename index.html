@@ -79,6 +79,31 @@
     .bottom-left-box .text-box.active {
       display: block;
     }
+    /* Fixed bottom-right circle */
+    #bottomRightCircle {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      width: 50px;
+      height: 50px;
+      border: 2px solid black;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1000;
+    }
+    /* Ode to boyhood h1 (centered and initially hidden) */
+    #odeToBoyhood {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3em;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      z-index: 2000;
+      display: none;
+      margin: 0;
+    }
   </style>
 </head>
 <body>
@@ -139,7 +164,14 @@
     </div>
   </div>
   
+  <!-- Fixed bottom-right circle -->
+  <div id="bottomRightCircle"></div>
+  
+  <!-- Hidden h1 element that will fade in -->
+  <h1 id="odeToBoyhood">ode to boyhood</h1>
+  
   <script>
+    // Bottom-left toggling box behavior
     document.getElementById("bottomLeftBox").addEventListener("click", function () {
       var plus = this.querySelector(".plus");
       var textBox = this.querySelector(".text-box");
@@ -150,6 +182,22 @@
         plus.textContent = "+";
         textBox.classList.remove("active");
       }
+    });
+    
+    // Bottom-right circle click behavior
+    document.getElementById("bottomRightCircle").addEventListener("click", function () {
+      // Hide the main container, bottom-left box, and the circle itself
+      document.querySelector(".container").style.display = "none";
+      document.getElementById("bottomLeftBox").style.display = "none";
+      this.style.display = "none";
+      
+      // Show and fade in the h1 element
+      var h1 = document.getElementById("odeToBoyhood");
+      h1.style.display = "block";
+      // Force a reflow before starting the opacity transition
+      setTimeout(function () {
+        h1.style.opacity = "1";
+      }, 50);
     });
   </script>
 </body>
