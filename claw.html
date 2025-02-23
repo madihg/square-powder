@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>This Claw is Here</title>
   <style>
-    body { 
-      margin: 0; 
-      overflow: hidden; 
+    body {
+      margin: 0;
+      overflow: hidden;
       background: #000;
     }
-    canvas { 
-      display: block; 
+
+    canvas {
+      display: block;
     }
+
     #info {
       position: absolute;
       top: 33%;
@@ -26,6 +29,7 @@
       font-size: 2em;
       pointer-events: none;
     }
+
     /* Styling for the fixed bottom-left toggle box */
     #toggle-box {
       position: fixed;
@@ -37,10 +41,13 @@
       border-radius: 5px;
       font-family: Courier, monospace;
       font-size: 1.2em;
+      font-weight: normal;
+      /* Ensures text is not bold */
       cursor: pointer;
       user-select: none;
       text-align: center;
     }
+
     #toggle-box a {
       color: #fff;
       text-decoration: underline;
@@ -49,6 +56,7 @@
     }
   </style>
 </head>
+
 <body>
   <div id="info">The hair clip is a clawing</div>
   <!-- Fixed toggle box -->
@@ -73,11 +81,11 @@
       "I don't like my hair down",
       "or the flimsy little black ties",
       "and I want to be a middle-age",
-      "white woman from Santa Barbara", 
+      "white woman from Santa Barbara",
       "named Janie or Margaret",
-      "and that was the version of manhood", 
+      "and that was the version of manhood",
       "that felt right",
-      "a grandeur barely aware of itself", 
+      "a grandeur barely aware of itself",
       "borrowing childhood like a pencil",
       "my claw is a wink to the boy who made it.",
       "A promise from a man he knows",
@@ -103,25 +111,25 @@
 
       // Load the glTF model
       const loader = new THREE.GLTFLoader();
-      loader.load('/claw.glb', function(gltf) {
-          object = gltf.scene;
-          object.position.set(0, 0, 0);
-          object.scale.set(0.3, 0.3, 0.3);
-          scene.add(object);
+      loader.load('/claw.glb', function (gltf) {
+        object = gltf.scene;
+        object.position.set(0, 0, 0);
+        object.scale.set(0.3, 0.3, 0.3);
+        scene.add(object);
 
-          // Initialize OrbitControls for rotation interaction
-          controls = new THREE.OrbitControls(camera, renderer.domElement);
-          controls.target.copy(object.position);
-          controls.enableZoom = false; // Optionally disable zoom
-          controls.enablePan = false;  // Optionally disable panning
+        // Initialize OrbitControls for rotation interaction
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.target.copy(object.position);
+        controls.enableZoom = false; // Optionally disable zoom
+        controls.enablePan = false;  // Optionally disable panning
 
-          // Update the info text when the user starts interacting
-          controls.addEventListener('start', function() {
-            infoDiv.innerText = sentences[sentenceIndex];
-            sentenceIndex = (sentenceIndex + 1) % sentences.length;
-          });
-      }, undefined, function(error) {
-          console.error('Error loading model:', error);
+        // Update the info text when the user starts interacting
+        controls.addEventListener('start', function () {
+          infoDiv.innerText = sentences[sentenceIndex];
+          sentenceIndex = (sentenceIndex + 1) % sentences.length;
+        });
+      }, undefined, function (error) {
+        console.error('Error loading model:', error);
       });
 
       window.addEventListener('resize', onWindowResize, false);
@@ -148,9 +156,9 @@
     const toggleBox = document.getElementById('toggle-box');
     let expanded = false;
 
-    toggleBox.addEventListener('click', function() {
+    toggleBox.addEventListener('click', function () {
       expanded = !expanded;
-      if(expanded) {
+      if (expanded) {
         // When expanded, show an 'x' and the descriptive text with a link
         toggleBox.innerHTML = 'x<br><span style="font-family: Courier, monospace; font-weight: normal;">A small computational poem by <a href="https://www.instagram.com/yalla_halim" target="_blank"> @yalla_halim</a></span>';
       } else {
@@ -160,4 +168,5 @@
     });
   </script>
 </body>
+
 </html>
