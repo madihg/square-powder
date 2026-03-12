@@ -1,619 +1,696 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Boys, Not Men</title>
-  <style>
-    /* -------------------------------
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boys, Not Men</title>
+    <style>
+      /* -------------------------------
        Global Styles
        ------------------------------- */
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #fff;
-      font-family: 'Times New Roman', 'Roboto Condensed', serif;
-      font-style: italic;
-      font-stretch: condensed;
-      overflow: auto;
-      /* Allow horizontal scrolling */
-      overflow-x: auto;
-    }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+        font-family: "Times New Roman", "Roboto Condensed", serif;
+        font-style: italic;
+        font-stretch: condensed;
+        overflow: auto;
+        /* Allow horizontal scrolling */
+        overflow-x: auto;
+      }
 
-    /* The main container starts small and expands as items are added */
-    #main-container {
-      position: relative;
-      /* We'll update width dynamically */
-      min-height: 100vh;
-      background-color: #fff;
-      margin: 0 auto;
-    }
+      /* The main container starts small and expands as items are added */
+      #main-container {
+        position: relative;
+        /* We'll update width dynamically */
+        min-height: 100vh;
+        background-color: #fff;
+        margin: 0 auto;
+      }
 
-    /* -------------------------------
+      /* -------------------------------
        Background Squares
        ------------------------------- */
-    .bg-square {
-      position: absolute;
-      width: 300px; /* Adjusted width for background squares */
-      border: 1px solid #000;
-      z-index: 0;
-    }
+      .bg-square {
+        position: absolute;
+        width: 300px; /* Adjusted width for background squares */
+        border: 1px solid #000;
+        z-index: 0;
+      }
 
-    /* -------------------------------
+      /* -------------------------------
        Item Containers
        ------------------------------- */
-    .image-container {
-      position: absolute;
-      width: 400px; /* Default fixed width for larger screens */
-      cursor: pointer;
-      overflow: visible;
-      z-index: 2;
-      border: 1px solid #000;
-    }
-
-    /* Responsive adjustment: scale down .image-container on small viewports */
-    @media screen and (max-width: 500px) {
       .image-container {
-        width: 90%;
+        position: absolute;
+        width: 400px; /* Default fixed width for larger screens */
+        cursor: pointer;
+        overflow: visible;
+        z-index: 2;
+        border: 1px solid #000;
       }
-    }
 
-    /* For text‑only items (items 8–10), remove the container border */
-    .text-only-container {
-      border: none;
-    }
+      /* Responsive adjustment: scale down .image-container on small viewports */
+      @media screen and (max-width: 500px) {
+        .image-container {
+          width: 90%;
+        }
+      }
 
-    /* -------------------------------
+      /* For text‑only items (items 8–10), remove the container border */
+      .text-only-container {
+        border: none;
+      }
+
+      /* -------------------------------
        Images
        ------------------------------- */
-    .image {
-      display: block;
-      width: 100%;
-      height: auto;
-      filter: grayscale(20%);
-      border: 1px solid #000;
-    }
+      .image {
+        display: block;
+        width: 100%;
+        height: auto;
+        filter: grayscale(20%);
+        border: 1px solid #000;
+      }
 
-    /* -------------------------------
+      /* -------------------------------
        Overlay (Text Box)
        ------------------------------- */
-    .overlay {
-      position: absolute;
-      width: 250px;
-      padding: 10px;
-      background-color: #fff;
-      border: 1px solid #000;
-      color: #000;
-      font-size: 20px;
-      font-weight: 50;
-      white-space: pre-wrap;
-      box-sizing: border-box;
-      z-index: 3;
-      overflow-wrap: normal;
-      word-break: normal;
-    }
-
-    /* -------------------------------
-       Mobile Specific Adjustments
-       ------------------------------- */
-    @media screen and (max-width: 500px) {
       .overlay {
-        /* Increase font size on mobile for better legibility */
-        font-size: 28px;
-      }
-    }
-
-    /* -------------------------------
-       CSS Animations
-       ------------------------------- */
-    @keyframes float {
-      0% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-20px);
-      }
-      100% {
-        transform: translateY(0);
-      }
-    }
-
-    .float {
-      animation: float 2s ease-in-out;
-    }
-
-    @keyframes glitch {
-      0% {
-        opacity: 1;
-      }
-      20% {
-        opacity: 0;
-      }
-      40% {
-        opacity: 1;
-      }
-      60% {
-        opacity: 0;
-      }
-      80% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 1;
-      }
-    }
-
-    .glitch {
-      animation: glitch 1s infinite;
-    }
-
-    @keyframes grow {
-      from {
+        position: absolute;
+        width: 250px;
+        padding: 10px;
+        background-color: #fff;
+        border: 1px solid #000;
+        color: #000;
         font-size: 20px;
         font-weight: 50;
+        white-space: pre-wrap;
+        box-sizing: border-box;
+        z-index: 3;
+        overflow-wrap: normal;
+        word-break: normal;
       }
-      to {
-        font-size: 60px;
+
+      /* -------------------------------
+       Mobile Specific Adjustments
+       ------------------------------- */
+      @media screen and (max-width: 500px) {
+        .overlay {
+          /* Increase font size on mobile for better legibility */
+          font-size: 28px;
+        }
+      }
+
+      /* -------------------------------
+       CSS Animations
+       ------------------------------- */
+      @keyframes float {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+      .float {
+        animation: float 2s ease-in-out;
+      }
+
+      @keyframes glitch {
+        0% {
+          opacity: 1;
+        }
+        20% {
+          opacity: 0;
+        }
+        40% {
+          opacity: 1;
+        }
+        60% {
+          opacity: 0;
+        }
+        80% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .glitch {
+        animation: glitch 1s infinite;
+      }
+
+      @keyframes grow {
+        from {
+          font-size: 20px;
+          font-weight: 50;
+        }
+        to {
+          font-size: 60px;
+          font-weight: 900;
+        }
+      }
+
+      .grow {
+        animation: grow 3s forwards;
+      }
+
+      @keyframes shake {
+        0% {
+          transform: translate(0, 0);
+        }
+        25% {
+          transform: translate(-10px, 0);
+        }
+        50% {
+          transform: translate(10px, 0);
+        }
+        75% {
+          transform: translate(-10px, 0);
+        }
+        100% {
+          transform: translate(0, 0);
+        }
+      }
+
+      .shake {
+        animation: shake 0.5s;
+      }
+
+      /* Hover effects for item 8 */
+      .hover-stretch:hover {
+        letter-spacing: 5px;
+      }
+
+      .hover-mark:hover {
+        text-decoration: line-through;
+      }
+
+      .hover-sharper:hover {
         font-weight: 900;
       }
-    }
 
-    .grow {
-      animation: grow 3s forwards;
-    }
-
-    @keyframes shake {
-      0% {
-        transform: translate(0, 0);
-      }
-      25% {
-        transform: translate(-10px, 0);
-      }
-      50% {
-        transform: translate(10px, 0);
-      }
-      75% {
-        transform: translate(-10px, 0);
-      }
-      100% {
-        transform: translate(0, 0);
-      }
-    }
-
-    .shake {
-      animation: shake 0.5s;
-    }
-
-    /* Hover effects for item 8 */
-    .hover-stretch:hover {
-      letter-spacing: 5px;
-    }
-
-    .hover-mark:hover {
-      text-decoration: line-through;
-    }
-
-    .hover-sharper:hover {
-      font-weight: 900;
-    }
-
-    /* -------------------------------
+      /* -------------------------------
        Toggle Box Styles
        ------------------------------- */
-    #toggle-box {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      background-color: rgba(255, 255, 255, 0.8);
-      color: #000;
-      border: 1px solid #000;
-      padding: 10px;
-      font-family: "Courier New", Courier, monospace;
-      font-weight: normal;
-      cursor: pointer;
-      z-index: 100;
-      user-select: none;
-    }
-    /* -------------------------------
+      #toggle-box {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(255, 255, 255, 0.8);
+        color: #000;
+        border: 1px solid #000;
+        padding: 10px;
+        font-family: "Courier New", Courier, monospace;
+        font-weight: normal;
+        cursor: pointer;
+        z-index: 100;
+        user-select: none;
+      }
+      /* -------------------------------
        End of CSS
        ------------------------------- */
-  </style>
-</head>
+    </style>
+  </head>
 
-<body>
-  <div id="main-container"></div>
-  <script>
-    /* Global variables for layout calculations */
-    let maxImageWidth; // Based on viewport size
-    let baseX;
-    let patternX = []; // Horizontal positions for items
-    let lastY; // Tracks the vertical position of the last item
+  <body>
+    <div id="main-container"></div>
+    <script>
+      /* Global variables for layout calculations */
+      let maxImageWidth; // Based on viewport size
+      let baseX;
+      let patternX = []; // Horizontal positions for items
+      let lastY; // Tracks the vertical position of the last item
 
-    /* -------------------------------
+      /* -------------------------------
        Data for 10 Items
        ------------------------------- */
-    const itemsData = [
-      { id: 1, src: "assets/image1.jpg", text: "Naruto Uzumaki, student, 3x savior of the secret ninja village of the leaf", animation: "none" },
-      { id: 2, src: "assets/image2.jpg", text: "Sangoku, son of Bardock, savior of Earth from 6 alien invasions", animation: "none" },
-      { id: 3, src: "assets/image3.jpg", text: "Ichigo Kurosaki, son of Isshin Kurosaki, ghost buster, orange hair", animation: "none" },
-      { id: 4, src: "assets/image4.jpg", text: "Gon Freecs, son of Jin Freecs, heart of gold", animation: "none" },
-      { id: 5, src: "assets/image5.jpg", text: "boys, not men\nhanded the weight of a world\non a Tuesday after class", animation: "floatExceptWeight" },
-      { id: 6, src: "assets/image6.jpg", text: "boys born pregnant\nwith a fist, a fox\na sword, a ball of light", animation: "glitchWords" },
-      { id: 7, src: "assets/image7.jpg", text: "boyhood, not a spurt\nbut a swelling in the negative \nspace of abandonment", animation: "growSwelling" },
-      { id: 8, src: "", text: "the crevasse the father left\nbetween panels stretch marked\nas sharper wounds than disbelief", animation: "hoverEffects" },
-      { id: 9, src: "", text: "fatherhood, not a figure\nbut a disappearing act\na slower way to conjure an absence", animation: "switchWords" },
-      { id: 10, src: "", text: "I’ve dogeared each of the 2,295\nchapters of brokenness, each\n a smaller commandment\non the nameless altar of disbelief", animation: "countUpAndShake" }
-    ];
+      const itemsData = [
+        {
+          id: 1,
+          src: "assets/image1.jpg",
+          text: "Naruto Uzumaki, student, 3x savior of the secret ninja village of the leaf",
+          animation: "none",
+        },
+        {
+          id: 2,
+          src: "assets/image2.jpg",
+          text: "Sangoku, son of Bardock, savior of Earth from 6 alien invasions",
+          animation: "none",
+        },
+        {
+          id: 3,
+          src: "assets/image3.jpg",
+          text: "Ichigo Kurosaki, son of Isshin Kurosaki, ghost buster, orange hair",
+          animation: "none",
+        },
+        {
+          id: 4,
+          src: "assets/image4.jpg",
+          text: "Gon Freecs, son of Jin Freecs, heart of gold",
+          animation: "none",
+        },
+        {
+          id: 5,
+          src: "assets/image5.jpg",
+          text: "boys, not men\nhanded the weight of a world\non a Tuesday after class",
+          animation: "floatExceptWeight",
+        },
+        {
+          id: 6,
+          src: "assets/image6.jpg",
+          text: "boys born pregnant\nwith a fist, a fox\na sword, a ball of light",
+          animation: "glitchWords",
+        },
+        {
+          id: 7,
+          src: "assets/image7.jpg",
+          text: "boyhood, not a spurt\nbut a swelling in the negative \nspace of abandonment",
+          animation: "growSwelling",
+        },
+        {
+          id: 8,
+          src: "",
+          text: "the crevasse the father left\nbetween panels stretch marked\nas sharper wounds than disbelief",
+          animation: "hoverEffects",
+        },
+        {
+          id: 9,
+          src: "",
+          text: "fatherhood, not a figure\nbut a disappearing act\na slower way to conjure an absence",
+          animation: "switchWords",
+        },
+        {
+          id: 10,
+          src: "",
+          text: "I’ve dogeared each of the 2,295\nchapters of brokenness, each\n a smaller commandment\non the nameless altar of disbelief",
+          animation: "countUpAndShake",
+        },
+      ];
 
-    let currentIndex = 0;
-    const mainContainer = document.getElementById("main-container");
-    const estimatedItemHeight = 300; // Default height for any item
-    const gap = 10;  // Vertical gap between items
+      let currentIndex = 0;
+      const mainContainer = document.getElementById("main-container");
+      const estimatedItemHeight = 300; // Default height for any item
+      const gap = 10; // Vertical gap between items
 
-    /* -------------------------------
+      /* -------------------------------
        Function: updateMainContainerDimensions
        ------------------------------- */
-    function updateMainContainerDimensions() {
-      const containers = document.querySelectorAll(".image-container");
-      let minLeft = Infinity;
-      let maxRight = -Infinity;
-      containers.forEach(container => {
-        const left = container.offsetLeft;
-        const width = container.offsetWidth;
-        if (left < minLeft) minLeft = left;
-        if (left + width > maxRight) maxRight = left + width;
-      });
-      const newWidth = maxRight - minLeft;
-      mainContainer.style.width = newWidth + "px";
-      mainContainer.style.marginLeft = -minLeft + "px";
-    }
+      function updateMainContainerDimensions() {
+        const containers = document.querySelectorAll(".image-container");
+        let minLeft = Infinity;
+        let maxRight = -Infinity;
+        containers.forEach((container) => {
+          const left = container.offsetLeft;
+          const width = container.offsetWidth;
+          if (left < minLeft) minLeft = left;
+          if (left + width > maxRight) maxRight = left + width;
+        });
+        const newWidth = maxRight - minLeft;
+        mainContainer.style.width = newWidth + "px";
+        mainContainer.style.marginLeft = -minLeft + "px";
+      }
 
-    /* -------------------------------
+      /* -------------------------------
        Background Squares Generation
        ------------------------------- */
-    function generateBackgroundSquares(num = 30) {
-      const placed = [];
-      function overlaps(rect, other) {
-        return !(rect.x + rect.w <= other.x || rect.x >= other.x + other.w ||
-                 rect.y + rect.h <= other.y || rect.y >= other.y + other.h);
-      }
-      for (let i = 0; i < num; i++) {
-        let attempts = 0;
-        while (attempts < 100) {
-          const bgRectWidth = 300;
-          const candidate = {
-            x: Math.random() * (window.innerWidth - bgRectWidth),
-            y: Math.random() * mainContainer.offsetHeight,
-            w: bgRectWidth,
-            h: 600 + Math.random() * 200
-          };
-          let overlap = placed.some(r => overlaps(candidate, r));
-          if (!overlap) {
-            placed.push(candidate);
-            const square = document.createElement("div");
-            square.className = "bg-square";
-            square.style.left = candidate.x + "px";
-            square.style.top = candidate.y + "px";
-            square.style.height = candidate.h + "px";
-            mainContainer.appendChild(square);
-            break;
+      function generateBackgroundSquares(num = 30) {
+        const placed = [];
+        function overlaps(rect, other) {
+          return !(
+            rect.x + rect.w <= other.x ||
+            rect.x >= other.x + other.w ||
+            rect.y + rect.h <= other.y ||
+            rect.y >= other.y + other.h
+          );
+        }
+        for (let i = 0; i < num; i++) {
+          let attempts = 0;
+          while (attempts < 100) {
+            const bgRectWidth = 300;
+            const candidate = {
+              x: Math.random() * (window.innerWidth - bgRectWidth),
+              y: Math.random() * mainContainer.offsetHeight,
+              w: bgRectWidth,
+              h: 600 + Math.random() * 200,
+            };
+            let overlap = placed.some((r) => overlaps(candidate, r));
+            if (!overlap) {
+              placed.push(candidate);
+              const square = document.createElement("div");
+              square.className = "bg-square";
+              square.style.left = candidate.x + "px";
+              square.style.top = candidate.y + "px";
+              square.style.height = candidate.h + "px";
+              mainContainer.appendChild(square);
+              break;
+            }
+            attempts++;
           }
-          attempts++;
         }
       }
-    }
-    generateBackgroundSquares();
+      generateBackgroundSquares();
 
-    /* -------------------------------
+      /* -------------------------------
        Utility: Create a Word Span
        ------------------------------- */
-    function createWordSpan(word, extraClass = "") {
-      const span = document.createElement("span");
-      span.innerText = word;
-      if (extraClass) span.classList.add(extraClass);
-      span.style.marginRight = "5px";
-      return span;
-    }
+      function createWordSpan(word, extraClass = "") {
+        const span = document.createElement("span");
+        span.innerText = word;
+        if (extraClass) span.classList.add(extraClass);
+        span.style.marginRight = "5px";
+        return span;
+      }
 
-    /* -------------------------------
+      /* -------------------------------
        animateText Function
        ------------------------------- */
-    function animateText(overlay, text, animationType, itemId) {
-      const tokens = text.split(/(\s+)/);
-      overlay.innerHTML = "";
-      let i = 0;
-      function addNext() {
-        if (i < tokens.length) {
-          const token = tokens[i];
-          if (token.match(/^\s+$/)) {
-            overlay.appendChild(document.createTextNode(token));
-          } else {
-            let span = createWordSpan(token);
-            if (animationType === "floatExceptWeight" && itemId === 5) {
-              if (token.toLowerCase().replace(/[^a-z]/g, "") === "weight") {
-                span.classList.add("no-float");
-                span.style.fontWeight = "900";
+      function animateText(overlay, text, animationType, itemId) {
+        const tokens = text.split(/(\s+)/);
+        overlay.innerHTML = "";
+        let i = 0;
+        function addNext() {
+          if (i < tokens.length) {
+            const token = tokens[i];
+            if (token.match(/^\s+$/)) {
+              overlay.appendChild(document.createTextNode(token));
+            } else {
+              let span = createWordSpan(token);
+              if (animationType === "floatExceptWeight" && itemId === 5) {
+                if (token.toLowerCase().replace(/[^a-z]/g, "") === "weight") {
+                  span.classList.add("no-float");
+                  span.style.fontWeight = "900";
+                }
+              } else if (animationType === "glitchWords" && itemId === 6) {
+                const target = token.toLowerCase().replace(/[^a-z]/g, "");
+                if (["fist", "fox", "sword", "ball"].includes(target)) {
+                  span.classList.add("glitch");
+                }
+              } else if (animationType === "growSwelling" && itemId === 7) {
+                if (token.toLowerCase() === "swelling") {
+                  span.classList.add("grow");
+                }
+              } else if (animationType === "hoverEffects" && itemId === 8) {
+                const clean = token.toLowerCase().replace(/[^a-z]/g, "");
+                if (clean === "stretch") span.classList.add("hover-stretch");
+                else if (clean === "marked") span.classList.add("hover-mark");
+                else if (clean === "sharper")
+                  span.classList.add("hover-sharper");
               }
-            } else if (animationType === "glitchWords" && itemId === 6) {
-              const target = token.toLowerCase().replace(/[^a-z]/g, "");
-              if (["fist", "fox", "sword", "ball"].includes(target)) {
-                span.classList.add("glitch");
-              }
-            } else if (animationType === "growSwelling" && itemId === 7) {
-              if (token.toLowerCase() === "swelling") {
-                span.classList.add("grow");
-              }
-            } else if (animationType === "hoverEffects" && itemId === 8) {
-              const clean = token.toLowerCase().replace(/[^a-z]/g, "");
-              if (clean === "stretch") span.classList.add("hover-stretch");
-              else if (clean === "marked") span.classList.add("hover-mark");
-              else if (clean === "sharper") span.classList.add("hover-sharper");
+              overlay.appendChild(span);
             }
-            overlay.appendChild(span);
+            i++;
+            setTimeout(addNext, 200);
+          } else {
+            if (animationType === "switchWords") startSwitchWords(overlay);
+            if (animationType === "countUpAndShake") startCountUp(overlay);
           }
-          i++;
-          setTimeout(addNext, 200);
-        } else {
-          if (animationType === "switchWords") startSwitchWords(overlay);
-          if (animationType === "countUpAndShake") startCountUp(overlay);
         }
+        addNext();
       }
-      addNext();
-    }
 
-    /* -------------------------------
+      /* -------------------------------
        Special Effects Functions
        ------------------------------- */
-    function startSwitchWords(overlay) {
-      setInterval(() => {
-        const spans = Array.from(overlay.querySelectorAll("span")).filter(span => {
-          const txt = span.innerText.toLowerCase().replace(/[^a-z]/g, "");
-          return ["act", "way", "absence"].includes(txt);
-        });
-        if (spans.length) {
-          spans.forEach(span => {
-            span.style.transition = "opacity 1.5s";
-            span.style.opacity = "0";
-          });
-          setTimeout(() => {
-            const texts = spans.map(span => span.innerText);
-            for (let i = texts.length - 1; i > 0; i--) {
-              let j = Math.floor(Math.random() * (i + 1));
-              [texts[i], texts[j]] = [texts[j], texts[i]];
-            }
-            spans.forEach((span, index) => {
-              span.innerText = texts[index];
-              span.style.opacity = "1";
+      function startSwitchWords(overlay) {
+        setInterval(() => {
+          const spans = Array.from(overlay.querySelectorAll("span")).filter(
+            (span) => {
+              const txt = span.innerText.toLowerCase().replace(/[^a-z]/g, "");
+              return ["act", "way", "absence"].includes(txt);
+            },
+          );
+          if (spans.length) {
+            spans.forEach((span) => {
+              span.style.transition = "opacity 1.5s";
+              span.style.opacity = "0";
             });
-          }, 1500);
-        }
-      }, 3000);
-    }
-
-    function startCountUp(overlay) {
-      let html = overlay.innerHTML;
-      const regex = /2,295/;
-      if (regex.test(html)) {
-        html = html.replace(regex, '<span id="countup">0</span>');
-        overlay.innerHTML = html;
-        const countSpan = document.getElementById("countup");
-        let current = 0;
-        const target = 2295;
-        const duration = 5000;
-        const stepTime = 50;
-        const steps = duration / stepTime;
-        const increment = target / steps;
-        const interval = setInterval(() => {
-          current += increment;
-          if (current >= target) {
-            current = target;
-            clearInterval(interval);
+            setTimeout(() => {
+              const texts = spans.map((span) => span.innerText);
+              for (let i = texts.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [texts[i], texts[j]] = [texts[j], texts[i]];
+              }
+              spans.forEach((span, index) => {
+                span.innerText = texts[index];
+                span.style.opacity = "1";
+              });
+            }, 1500);
           }
-          countSpan.innerText = Math.floor(current);
-        }, stepTime);
+        }, 3000);
       }
-    }
 
-    /* -------------------------------
+      function startCountUp(overlay) {
+        let html = overlay.innerHTML;
+        const regex = /2,295/;
+        if (regex.test(html)) {
+          html = html.replace(regex, '<span id="countup">0</span>');
+          overlay.innerHTML = html;
+          const countSpan = document.getElementById("countup");
+          let current = 0;
+          const target = 2295;
+          const duration = 5000;
+          const stepTime = 50;
+          const steps = duration / stepTime;
+          const increment = target / steps;
+          const interval = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+              current = target;
+              clearInterval(interval);
+            }
+            countSpan.innerText = Math.floor(current);
+          }, stepTime);
+        }
+      }
+
+      /* -------------------------------
        createItemContainer Function
        ------------------------------- */
-    function createItemContainer(data, x, y) {
-      const container = document.createElement("div");
-      container.className = "image-container";
-      container.style.left = x + "px";
-      container.style.top = y + "px";
+      function createItemContainer(data, x, y) {
+        const container = document.createElement("div");
+        container.className = "image-container";
+        container.style.left = x + "px";
+        container.style.top = y + "px";
 
-      if (data.src) {
-        const img = document.createElement("img");
-        img.className = "image";
-        img.src = data.src;
-        img.alt = data.text.split("\n")[0];
-        container.appendChild(img);
-      } else {
-        container.classList.add("text-only-container");
-        container.style.height = estimatedItemHeight + "px";
-      }
-
-      const overlay = document.createElement("div");
-      overlay.className = "overlay";
-      container.appendChild(overlay);
-      animateText(overlay, data.text, data.animation, data.id);
-
-      if (data.src) {
-        const img = container.querySelector("img");
-        img.onload = function () {
-          const containerWidth = container.offsetWidth;
-          const containerHeight = container.offsetHeight;
-          const candidates = [
-            { top: "10px", left: "10px" },
-            { top: "10px", left: (containerWidth - overlay.offsetWidth - 10) + "px" },
-            { top: (containerHeight - overlay.offsetHeight - 10) + "px", left: "10px" },
-            { top: (containerHeight - overlay.offsetHeight - 10) + "px", left: (containerWidth - overlay.offsetWidth - 10) + "px" }
-          ];
-          const pos = candidates[Math.floor(Math.random() * candidates.length)];
-          overlay.style.top = (parseInt(pos.top) - 20) + "px";
-          overlay.style.left = (parseInt(pos.left) - 20) + "px";
-        };
-      } else {
-        overlay.style.top = "20px";
-        overlay.style.left = "20px";
-      }
-
-      container.addEventListener("click", function (e) {
-        e.stopPropagation();
-        if (currentIndex < itemsData.length - 1) {
-          addNextItem();
+        if (data.src) {
+          const img = document.createElement("img");
+          img.className = "image";
+          img.src = data.src;
+          img.alt = data.text.split("\n")[0];
+          container.appendChild(img);
         } else {
-          scatterAndVanish();
+          container.classList.add("text-only-container");
+          container.style.height = estimatedItemHeight + "px";
         }
-      });
-      return container;
-    }
 
-    /* -------------------------------
+        const overlay = document.createElement("div");
+        overlay.className = "overlay";
+        container.appendChild(overlay);
+        animateText(overlay, data.text, data.animation, data.id);
+
+        if (data.src) {
+          const img = container.querySelector("img");
+          img.onload = function () {
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+            const candidates = [
+              { top: "10px", left: "10px" },
+              {
+                top: "10px",
+                left: containerWidth - overlay.offsetWidth - 10 + "px",
+              },
+              {
+                top: containerHeight - overlay.offsetHeight - 10 + "px",
+                left: "10px",
+              },
+              {
+                top: containerHeight - overlay.offsetHeight - 10 + "px",
+                left: containerWidth - overlay.offsetWidth - 10 + "px",
+              },
+            ];
+            const pos =
+              candidates[Math.floor(Math.random() * candidates.length)];
+            overlay.style.top = parseInt(pos.top) - 20 + "px";
+            overlay.style.left = parseInt(pos.left) - 20 + "px";
+          };
+        } else {
+          overlay.style.top = "20px";
+          overlay.style.left = "20px";
+        }
+
+        container.addEventListener("click", function (e) {
+          e.stopPropagation();
+          if (currentIndex < itemsData.length - 1) {
+            addNextItem();
+          } else {
+            scatterAndVanish();
+          }
+        });
+        return container;
+      }
+
+      /* -------------------------------
        centerOnElement Function
        ------------------------------- */
-    function centerOnElement(el) {
-      const rect = el.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2 + window.pageXOffset;
-      const centerY = rect.top + rect.height / 2 + window.pageYOffset;
-      window.scrollTo({
-        left: centerX - window.innerWidth / 2,
-        top: centerY - window.innerHeight / 2,
-        behavior: "smooth"
-      });
-    }
+      function centerOnElement(el) {
+        const rect = el.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2 + window.pageXOffset;
+        const centerY = rect.top + rect.height / 2 + window.pageYOffset;
+        window.scrollTo({
+          left: centerX - window.innerWidth / 2,
+          top: centerY - window.innerHeight / 2,
+          behavior: "smooth",
+        });
+      }
 
-    /* -------------------------------
+      /* -------------------------------
        addNextItem Function
        ------------------------------- */
-    function addNextItem() {
-      if (currentIndex < itemsData.length - 1) {
-        currentIndex++;
+      function addNextItem() {
+        if (currentIndex < itemsData.length - 1) {
+          currentIndex++;
 
-        let customOffset = 0;
-        if (!itemsData[currentIndex].src) {
-          if (itemsData[currentIndex].id === 8) {
-            customOffset = -50;
-          } else if (itemsData[currentIndex].id === 9) {
-            customOffset = -100;
-          } else if (itemsData[currentIndex].id === 10) {
-            customOffset = -200;
+          let customOffset = 0;
+          if (!itemsData[currentIndex].src) {
+            if (itemsData[currentIndex].id === 8) {
+              customOffset = -50;
+            } else if (itemsData[currentIndex].id === 9) {
+              customOffset = -100;
+            } else if (itemsData[currentIndex].id === 10) {
+              customOffset = -200;
+            }
           }
-        }
 
-        let newY = lastY + estimatedItemHeight + gap + customOffset;
-        newY = Math.max(0, newY);
-        console.log("New Y for item " + itemsData[currentIndex].id + ": " + newY);
+          let newY = lastY + estimatedItemHeight + gap + customOffset;
+          newY = Math.max(0, newY);
+          console.log(
+            "New Y for item " + itemsData[currentIndex].id + ": " + newY,
+          );
 
-        let newX = patternX[currentIndex];
-        if (!itemsData[currentIndex].src) {
-          if (itemsData[currentIndex].id === 8) {
-            newX = baseX - 300;
-          } else if (itemsData[currentIndex].id === 9) {
-            newX = baseX + 400;
-          } else if (itemsData[currentIndex].id === 10) {
-            newX = baseX - 100;
+          let newX = patternX[currentIndex];
+          if (!itemsData[currentIndex].src) {
+            if (itemsData[currentIndex].id === 8) {
+              newX = baseX - 300;
+            } else if (itemsData[currentIndex].id === 9) {
+              newX = baseX + 400;
+            } else if (itemsData[currentIndex].id === 10) {
+              newX = baseX - 100;
+            }
           }
-        }
 
-        lastY = newY;
-        const newContainer = createItemContainer(itemsData[currentIndex], newX, newY);
-        mainContainer.appendChild(newContainer);
-        centerOnElement(newContainer);
+          lastY = newY;
+          const newContainer = createItemContainer(
+            itemsData[currentIndex],
+            newX,
+            newY,
+          );
+          mainContainer.appendChild(newContainer);
+          centerOnElement(newContainer);
 
-        const bottom = newY + estimatedItemHeight + gap;
-        if (bottom > mainContainer.offsetHeight) {
-          mainContainer.style.height = bottom + "px";
+          const bottom = newY + estimatedItemHeight + gap;
+          if (bottom > mainContainer.offsetHeight) {
+            mainContainer.style.height = bottom + "px";
+          }
+          generateBackgroundSquares(2);
+          updateMainContainerDimensions();
         }
-        generateBackgroundSquares(2);
-        updateMainContainerDimensions();
       }
-    }
 
-    /* -------------------------------
+      /* -------------------------------
        scatterAndVanish Function
        ------------------------------- */
-    function scatterAndVanish() {
-      const items = document.querySelectorAll(".image-container");
-      items.forEach(item => {
-        const dx = (Math.random() - 0.5) * 200;
-        const dy = (Math.random() - 0.5) * 200;
-        item.style.transition = "transform 30s, opacity 10s";
-        item.style.transform = `translate(${dx}px, ${dy}px)`;
-        item.style.opacity = "0";
-      });
-      setTimeout(() => {
-        mainContainer.innerHTML = "";
-      }, 15000);
-    }
+      function scatterAndVanish() {
+        const items = document.querySelectorAll(".image-container");
+        items.forEach((item) => {
+          const dx = (Math.random() - 0.5) * 200;
+          const dy = (Math.random() - 0.5) * 200;
+          item.style.transition = "transform 30s, opacity 10s";
+          item.style.transform = `translate(${dx}px, ${dy}px)`;
+          item.style.opacity = "0";
+        });
+        setTimeout(() => {
+          mainContainer.innerHTML = "";
+        }, 15000);
+      }
 
-    /* -------------------------------
+      /* -------------------------------
        Initial Load
        ------------------------------- */
-    window.onload = function () {
-      maxImageWidth = window.innerWidth < 500 ? window.innerWidth * 0.9 : 400;
-      baseX = window.innerWidth / 2 - maxImageWidth / 2;
-      patternX = [
-        baseX,                        // Item 1
-        baseX + 0.6 * maxImageWidth,  // Item 2
-        baseX - 0.6 * maxImageWidth,  // Item 3
-        baseX,                        // Item 4
-        baseX + 0.6 * maxImageWidth,  // Item 5
-        baseX - 0.6 * maxImageWidth,  // Item 6
-        baseX,                        // Item 7
-        baseX,                        // Placeholder for item 8 (overridden)
-        baseX,                        // Placeholder for item 9
-        baseX                         // Placeholder for item 10
-      ];
-      lastY = window.innerHeight / 2 - estimatedItemHeight / 2;
-      const firstContainer = createItemContainer(itemsData[0], patternX[0], lastY);
-      mainContainer.appendChild(firstContainer);
-      centerOnElement(firstContainer);
-      mainContainer.style.height = (lastY + estimatedItemHeight + gap) + "px";
-      updateMainContainerDimensions();
-    };
+      window.onload = function () {
+        maxImageWidth = window.innerWidth < 500 ? window.innerWidth * 0.9 : 400;
+        baseX = window.innerWidth / 2 - maxImageWidth / 2;
+        patternX = [
+          baseX, // Item 1
+          baseX + 0.6 * maxImageWidth, // Item 2
+          baseX - 0.6 * maxImageWidth, // Item 3
+          baseX, // Item 4
+          baseX + 0.6 * maxImageWidth, // Item 5
+          baseX - 0.6 * maxImageWidth, // Item 6
+          baseX, // Item 7
+          baseX, // Placeholder for item 8 (overridden)
+          baseX, // Placeholder for item 9
+          baseX, // Placeholder for item 10
+        ];
+        lastY = window.innerHeight / 2 - estimatedItemHeight / 2;
+        const firstContainer = createItemContainer(
+          itemsData[0],
+          patternX[0],
+          lastY,
+        );
+        mainContainer.appendChild(firstContainer);
+        centerOnElement(firstContainer);
+        mainContainer.style.height = lastY + estimatedItemHeight + gap + "px";
+        updateMainContainerDimensions();
+      };
 
-    /* -------------------------------
+      /* -------------------------------
        Additional Hover Effect for Item 5
        ------------------------------- */
-    document.addEventListener("mouseover", function (e) {
-      const overlay = e.target.closest(".overlay");
-      if (overlay && overlay.parentElement.querySelector("img")) {
-        const imgAlt = overlay.parentElement.querySelector("img").alt;
-        if (imgAlt.toLowerCase().includes("boys")) {
-          overlay.querySelectorAll("span").forEach(span => {
-            if (!span.classList.contains("no-float")) span.classList.add("float");
-          });
-          setTimeout(() => {
-            overlay.querySelectorAll("span").forEach(span => {
-              span.classList.remove("float");
+      document.addEventListener("mouseover", function (e) {
+        const overlay = e.target.closest(".overlay");
+        if (overlay && overlay.parentElement.querySelector("img")) {
+          const imgAlt = overlay.parentElement.querySelector("img").alt;
+          if (imgAlt.toLowerCase().includes("boys")) {
+            overlay.querySelectorAll("span").forEach((span) => {
+              if (!span.classList.contains("no-float"))
+                span.classList.add("float");
             });
-          }, 3000);
+            setTimeout(() => {
+              overlay.querySelectorAll("span").forEach((span) => {
+                span.classList.remove("float");
+              });
+            }, 3000);
+          }
         }
-      }
-    });
+      });
 
-    /* -------------------------------
+      /* -------------------------------
        Toggle Box for Poem Credit
        ------------------------------- */
-    const toggleBox = document.createElement("div");
-    toggleBox.id = "toggle-box";
-    toggleBox.innerHTML = "+";
-    toggleBox.dataset.expanded = "false";
-    document.body.appendChild(toggleBox);
+      const toggleBox = document.createElement("div");
+      toggleBox.id = "toggle-box";
+      toggleBox.innerHTML = "+";
+      toggleBox.dataset.expanded = "false";
+      document.body.appendChild(toggleBox);
 
-    toggleBox.addEventListener("click", function () {
-      if (toggleBox.dataset.expanded === "false") {
-        toggleBox.dataset.expanded = "true";
-        toggleBox.innerHTML = "A small computational poem by (<a href='https://www.instagram.com/yalla_halim' target='_blank' style='color: inherit; text-decoration: none;'>@yalla_halim</a>)";
-      } else {
-        toggleBox.dataset.expanded = "false";
-        toggleBox.innerHTML = "+";
-      }
-    });
-  </script>
-</body>
-
+      toggleBox.addEventListener("click", function () {
+        if (toggleBox.dataset.expanded === "false") {
+          toggleBox.dataset.expanded = "true";
+          toggleBox.innerHTML =
+            "A small computational poem by (<a href='https://www.instagram.com/yalla_halim' target='_blank' style='color: inherit; text-decoration: none;'>@yalla_halim</a>)";
+        } else {
+          toggleBox.dataset.expanded = "false";
+          toggleBox.innerHTML = "+";
+        }
+      });
+    </script>
+  </body>
 </html>
