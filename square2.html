@@ -1,0 +1,904 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Boys, Not Men</title>
+    <style>
+      /* ---- Reset & Base ---- */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --ink: #000;
+        --paper: #fff;
+        --section-height: 150vh;
+        --panel-border: 3px solid var(--ink);
+        --speed-line: rgba(0, 0, 0, 0.1);
+        --halftone: rgba(0, 0, 0, 0.13);
+        --screentone: rgba(0, 0, 0, 0.06);
+      }
+
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Times New Roman", Georgia, serif;
+        font-style: italic;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      /* ---- Section / Panel layout ---- */
+      .stanza {
+        height: var(--section-height);
+        position: relative;
+      }
+
+      .panel {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .panel-art {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0;
+        will-change: opacity;
+      }
+
+      .panel-border {
+        position: absolute;
+        inset: 20px;
+        border: var(--panel-border);
+        pointer-events: none;
+        opacity: 0;
+      }
+
+      .panel-text {
+        position: relative;
+        z-index: 2;
+        max-width: 550px;
+        padding: 40px;
+        font-size: clamp(18px, 3.2vw, 26px);
+        font-weight: 100;
+        line-height: 1.7;
+        white-space: pre-wrap;
+      }
+
+      .word {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(18px);
+        transition: none;
+        margin-right: 0.25em;
+      }
+
+      /* ---- Panel Art: Naruto - radial speed lines ---- */
+      .art-naruto {
+        background: repeating-conic-gradient(
+          from 0deg at 50% 50%,
+          var(--speed-line) 0deg 1.5deg,
+          transparent 1.5deg 5deg
+        );
+      }
+      .art-naruto::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at center,
+          var(--paper) 8%,
+          transparent 45%
+        );
+      }
+
+      /* ---- Panel Art: Goku - halftone dots + energy rings ---- */
+      .art-goku {
+        background-image: radial-gradient(
+          circle,
+          var(--halftone) 1.2px,
+          transparent 1.2px
+        );
+        background-size: 8px 8px;
+      }
+      .art-goku::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-radial-gradient(
+          circle at 50% 50%,
+          transparent 0px,
+          transparent 35px,
+          rgba(0, 0, 0, 0.035) 35px,
+          rgba(0, 0, 0, 0.035) 37px
+        );
+      }
+      .art-goku::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at center,
+          var(--paper) 0%,
+          transparent 50%
+        );
+      }
+
+      /* ---- Panel Art: Ichigo - diagonal slashes ---- */
+      .art-ichigo {
+        background: repeating-linear-gradient(
+          -45deg,
+          transparent 0px,
+          transparent 18px,
+          var(--speed-line) 18px,
+          var(--speed-line) 20px
+        );
+      }
+      .art-ichigo::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          45deg,
+          transparent 0px,
+          transparent 36px,
+          rgba(0, 0, 0, 0.05) 36px,
+          rgba(0, 0, 0, 0.05) 37px
+        );
+      }
+      .art-ichigo::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          -30deg,
+          transparent 46%,
+          rgba(0, 0, 0, 0.12) 49%,
+          rgba(0, 0, 0, 0.12) 51%,
+          transparent 54%
+        );
+      }
+
+      /* ---- Panel Art: Gon - soft screentone ---- */
+      .art-gon {
+        background-image: radial-gradient(
+          circle,
+          var(--screentone) 2px,
+          transparent 2px
+        );
+        background-size: 14px 14px;
+      }
+      .art-gon::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at center,
+          transparent 40%,
+          rgba(0, 0, 0, 0.045) 100%
+        );
+      }
+
+      /* ---- Panel borders for transition stanzas (5-7) ---- */
+      .border-crack {
+        position: absolute;
+        inset: 20px;
+        pointer-events: none;
+      }
+      .border-crack svg {
+        width: 100%;
+        height: 100%;
+      }
+      .border-crack path {
+        fill: none;
+        stroke: var(--ink);
+        stroke-width: 3;
+      }
+
+      /* ---- Absence panels (8-10) ---- */
+      .panel-absence-8 .panel-border {
+        border-right: none;
+        border-bottom: none;
+      }
+      .panel-absence-9 .panel-border {
+        border: none;
+        border-top: 2px solid rgba(0, 0, 0, 0.3);
+      }
+      .panel-absence-10 .panel-border {
+        border: none;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+      }
+
+      /* ---- Keyframe animations ---- */
+      @keyframes glitch-flicker {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        15% {
+          opacity: 0;
+          transform: translateX(3px);
+        }
+        30% {
+          opacity: 1;
+        }
+        55% {
+          opacity: 0;
+          transform: translateX(-2px);
+        }
+        70% {
+          opacity: 1;
+        }
+      }
+      .glitch-active {
+        animation: glitch-flicker 0.7s infinite;
+      }
+
+      @keyframes panel-shake {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        20% {
+          transform: translate(-6px, 3px);
+        }
+        40% {
+          transform: translate(5px, -4px);
+        }
+        60% {
+          transform: translate(-3px, 5px);
+        }
+        80% {
+          transform: translate(4px, -2px);
+        }
+      }
+      .shake-active {
+        animation: panel-shake 0.45s ease-in-out;
+      }
+
+      /* ---- Toggle box ---- */
+      #toggle-box {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        background: rgba(255, 255, 255, 0.85);
+        color: var(--ink);
+        border: 1px solid var(--ink);
+        padding: 10px;
+        font-family: "Courier New", Courier, monospace;
+        font-style: normal;
+        font-weight: normal;
+        cursor: pointer;
+        z-index: 100;
+        user-select: none;
+        font-size: 14px;
+      }
+      #toggle-box a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* ---- Cycle indicator ---- */
+      #cycle-indicator {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        font-family: "Courier New", monospace;
+        font-style: normal;
+        font-size: 11px;
+        color: rgba(0, 0, 0, 0.12);
+        z-index: 50;
+        pointer-events: none;
+      }
+
+      /* ---- Mobile ---- */
+      @media (max-width: 600px) {
+        .panel-border {
+          inset: 10px;
+        }
+        .panel-text {
+          padding: 24px;
+          max-width: 100%;
+        }
+        .border-crack {
+          inset: 10px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="scroll-container"></div>
+
+    <div id="toggle-box">+</div>
+    <div id="cycle-indicator"></div>
+
+    <script>
+      /* ========================================
+       DATA
+       ======================================== */
+      const STANZAS = [
+        {
+          id: 1,
+          artClass: "art-naruto",
+          type: "character",
+          text: "Naruto Uzumaki, student,\n3x savior of the secret\nninja village of the leaf",
+          effects: [],
+        },
+        {
+          id: 2,
+          artClass: "art-goku",
+          type: "character",
+          text: "Sangoku, son of Bardock,\nsavior of Earth from\n6 alien invasions",
+          effects: [],
+        },
+        {
+          id: 3,
+          artClass: "art-ichigo",
+          type: "character",
+          text: "Ichigo Kurosaki, son of\nIsshin Kurosaki,\nghost buster, orange hair",
+          effects: [],
+        },
+        {
+          id: 4,
+          artClass: "art-gon",
+          type: "character",
+          text: "Gon Freecs, son of\nJin Freecs,\nheart of gold",
+          effects: [],
+        },
+        {
+          id: 5,
+          artClass: "",
+          type: "transition",
+          text: "boys, not men\nhanded the weight of a world\non a Tuesday after class",
+          effects: [{ type: "float-except", anchor: "weight" }],
+        },
+        {
+          id: 6,
+          artClass: "",
+          type: "transition",
+          text: "boys born pregnant\nwith a fist, a fox\na sword, a ball of light",
+          effects: [
+            { type: "glitch", targets: ["fist", "fox", "sword", "ball"] },
+          ],
+        },
+        {
+          id: 7,
+          artClass: "",
+          type: "transition",
+          text: "boyhood, not a spurt\nbut a swelling in the negative\nspace of abandonment",
+          effects: [{ type: "grow", target: "swelling" }],
+        },
+        {
+          id: 8,
+          artClass: "",
+          type: "absence",
+          text: "the crevasse the father left\nbetween panels stretch marked\nas sharper wounds than disbelief",
+          effects: [
+            {
+              type: "stretch-mark",
+              targets: {
+                stretch: "spacing",
+                marked: "strike",
+                sharper: "bold",
+              },
+            },
+          ],
+        },
+        {
+          id: 9,
+          artClass: "",
+          type: "absence",
+          text: "fatherhood, not a figure\nbut a disappearing act\na slower way to conjure an absence",
+          effects: [{ type: "swap", targets: ["act", "way", "absence"] }],
+        },
+        {
+          id: 10,
+          artClass: "",
+          type: "absence",
+          text: "I've dogeared each of the 2,295\nchapters of brokenness, each\na smaller commandment\non the nameless altar of disbelief",
+          effects: [{ type: "countup", target: "2295" }],
+        },
+      ];
+
+      /* ========================================
+       CONFIG
+       ======================================== */
+      const SECTION_VH = 150;
+      const container = document.getElementById("scroll-container");
+      let sections = [];
+      let cycleCount = 0;
+      let ticking = false;
+      let vh = window.innerHeight;
+
+      /* ========================================
+       UTILITIES
+       ======================================== */
+      function clean(word) {
+        return word.toLowerCase().replace(/[^a-z]/g, "");
+      }
+
+      function clamp01(v) {
+        return Math.max(0, Math.min(1, v));
+      }
+
+      function lerp(a, b, t) {
+        return a + (b - a) * t;
+      }
+
+      /* ========================================
+       WORD SPLITTING
+       ======================================== */
+      function buildWords(text, effects, cycle) {
+        const frag = document.createDocumentFragment();
+        const lines = text.split("\n");
+        lines.forEach((line, li) => {
+          if (li > 0) frag.appendChild(document.createElement("br"));
+          const words = line.split(/\s+/).filter(Boolean);
+          words.forEach((w) => {
+            const span = document.createElement("span");
+            span.className = "word";
+            span.textContent = w;
+            const c = clean(w);
+            span.dataset.clean = c;
+
+            effects.forEach((fx) => {
+              if (fx.type === "float-except" && c === fx.anchor)
+                span.dataset.effect = "anchor";
+              if (fx.type === "glitch" && fx.targets.includes(c))
+                span.dataset.effect = "glitch";
+              if (fx.type === "grow" && c === fx.target)
+                span.dataset.effect = "grow";
+              if (fx.type === "stretch-mark") {
+                if (fx.targets[c]) span.dataset.effect = fx.targets[c];
+              }
+              if (fx.type === "swap" && fx.targets.includes(c))
+                span.dataset.effect = "swap";
+              if (fx.type === "countup" && w.replace(/,/g, "") === fx.target) {
+                span.dataset.effect = "countup";
+              }
+            });
+            frag.appendChild(span);
+          });
+        });
+        return frag;
+      }
+
+      /* ========================================
+       CRACK SVG for transition panels
+       ======================================== */
+      function makeCrackSVG(stanzaId) {
+        const svg = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "svg",
+        );
+        svg.setAttribute("viewBox", "0 0 100 100");
+        svg.setAttribute("preserveAspectRatio", "none");
+        svg.style.width = "100%";
+        svg.style.height = "100%";
+
+        // Main border path
+        const border = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path",
+        );
+        border.setAttribute("d", "M0,0 L100,0 L100,100 L0,100 Z");
+        border.setAttribute("stroke", "black");
+        border.setAttribute("stroke-width", "0.5");
+        border.setAttribute("fill", "none");
+        border.setAttribute("vector-effect", "non-scaling-stroke");
+
+        // Crack paths that branch from border
+        const crack = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path",
+        );
+        let d;
+        if (stanzaId === 5) {
+          d = "M65,0 L63,8 L67,15 M35,100 L37,92 L33,85";
+        } else if (stanzaId === 6) {
+          d =
+            "M65,0 L62,12 L68,22 L60,30 M35,100 L38,88 L32,78 M100,40 L92,42 L85,38";
+        } else {
+          d =
+            "M65,0 L60,15 L70,30 L55,42 M35,100 L40,82 L30,68 L42,55 M100,40 L88,44 L78,38 L70,46 M0,60 L12,58 L20,65";
+        }
+        crack.setAttribute("d", d);
+        crack.setAttribute("stroke", "black");
+        crack.setAttribute("stroke-width", "0.4");
+        crack.setAttribute("fill", "none");
+        crack.setAttribute("vector-effect", "non-scaling-stroke");
+
+        const totalLen = 300;
+        crack.setAttribute("stroke-dasharray", totalLen);
+        crack.setAttribute("stroke-dashoffset", totalLen);
+
+        svg.appendChild(border);
+        svg.appendChild(crack);
+        return { svg, crack, totalLen, border };
+      }
+
+      /* ========================================
+       BUILD SECTION
+       ======================================== */
+      function buildSection(stanza, cycle) {
+        const section = document.createElement("section");
+        section.className = "stanza";
+        section.dataset.stanza = stanza.id;
+        section.dataset.cycle = cycle;
+        section.style.height = SECTION_VH + "vh";
+
+        const panel = document.createElement("div");
+        panel.className = "panel";
+
+        // Art layer (character stanzas only)
+        let art = null;
+        if (stanza.artClass) {
+          art = document.createElement("div");
+          art.className = "panel-art " + stanza.artClass;
+          // Cycle variations
+          if (cycle > 0) {
+            const angleShift = cycle * 12;
+            art.style.filter =
+              "contrast(" + Math.max(0.55, 1 - cycle * 0.06) + ")";
+            art.style.transform = "rotate(" + angleShift + "deg) scale(1.15)";
+          }
+          panel.appendChild(art);
+        }
+
+        // Border layer
+        let borderEl = null;
+        let crackData = null;
+        if (stanza.type === "character") {
+          borderEl = document.createElement("div");
+          borderEl.className = "panel-border";
+          // Double border for character panels
+          borderEl.style.boxShadow =
+            "inset 0 0 0 5px var(--paper), inset 0 0 0 7px var(--ink)";
+          if (cycle > 0) {
+            const bOpacity = Math.max(0.15, 1 - cycle * 0.12);
+            borderEl.style.opacity = bOpacity;
+          }
+          panel.appendChild(borderEl);
+        } else if (stanza.type === "transition") {
+          const crackWrap = document.createElement("div");
+          crackWrap.className = "border-crack";
+          crackData = makeCrackSVG(stanza.id);
+          crackWrap.appendChild(crackData.svg);
+          panel.appendChild(crackWrap);
+        } else if (stanza.type === "absence") {
+          borderEl = document.createElement("div");
+          borderEl.className = "panel-border";
+          panel.classList.add("panel-absence-" + stanza.id);
+          panel.appendChild(borderEl);
+        }
+
+        // Text layer
+        const textEl = document.createElement("div");
+        textEl.className = "panel-text";
+
+        // Apply text mutations for later cycles
+        let mutatedText = stanza.text;
+        if (cycle > 0 && stanza.type === "character") {
+          // Erode character names
+          const lines = mutatedText.split("\n");
+          const firstLine = lines[0];
+          const charsToRemove = Math.min(cycle * 2, firstLine.length - 3);
+          if (charsToRemove > 0) {
+            lines[0] = firstLine.slice(0, firstLine.length - charsToRemove);
+          }
+          mutatedText = lines.join("\n");
+        }
+
+        textEl.appendChild(buildWords(mutatedText, stanza.effects, cycle));
+        panel.appendChild(textEl);
+        section.appendChild(panel);
+
+        // Swap state for stanza 9
+        let lastSwapPhase = -1;
+
+        // Countup state for stanza 10
+        let countStarted = false;
+        let countDone = false;
+        const countTarget = 2295 * (cycle + 1);
+
+        // Update function
+        function update(progress) {
+          const words = textEl.querySelectorAll(".word");
+
+          // --- Art fade ---
+          if (art) {
+            if (progress < 0.3) {
+              art.style.opacity = clamp01(progress / 0.3);
+            } else if (progress > 0.8) {
+              art.style.opacity = clamp01((1 - progress) / 0.2);
+            } else {
+              art.style.opacity = 1;
+            }
+          }
+
+          // --- Border fade ---
+          if (borderEl && stanza.type === "character") {
+            const baseOpacity =
+              cycle > 0 ? Math.max(0.15, 1 - cycle * 0.12) : 1;
+            if (progress < 0.2) {
+              borderEl.style.opacity = clamp01(progress / 0.2) * baseOpacity;
+            } else if (progress > 0.85) {
+              borderEl.style.opacity =
+                clamp01((1 - progress) / 0.15) * baseOpacity;
+            } else {
+              borderEl.style.opacity = baseOpacity;
+            }
+          }
+
+          // --- Absence border ---
+          if (borderEl && stanza.type === "absence") {
+            borderEl.style.opacity = clamp01(progress / 0.3);
+          }
+
+          // --- Crack animation ---
+          if (crackData) {
+            const crackProgress = clamp01((progress - 0.2) / 0.5);
+            crackData.crack.setAttribute(
+              "stroke-dashoffset",
+              crackData.totalLen * (1 - crackProgress),
+            );
+            const borderOpacity = clamp01(progress / 0.15);
+            crackData.border.setAttribute("stroke-opacity", borderOpacity);
+            // Fade out
+            if (progress > 0.85) {
+              const fo = clamp01((1 - progress) / 0.15);
+              crackData.border.setAttribute("stroke-opacity", fo);
+              crackData.crack.setAttribute("stroke-opacity", fo);
+            }
+          }
+
+          // --- Word reveal (all stanzas) ---
+          words.forEach((w, i) => {
+            const wordStart = 0.08 + (i / words.length) * 0.45;
+            const wp = clamp01((progress - wordStart) / 0.06);
+            // Base reveal
+            if (w.dataset.effect !== "anchor") {
+              w.style.opacity = wp;
+              w.style.transform = "translateY(" + (1 - wp) * 18 + "px)";
+            } else {
+              w.style.opacity = wp;
+              w.style.transform = "translateY(" + (1 - wp) * 18 + "px)";
+            }
+          });
+
+          // --- Stanza 5: float except weight ---
+          if (stanza.id === 5 && progress > 0.55) {
+            const fp = clamp01((progress - 0.55) / 0.4);
+            words.forEach((w) => {
+              if (w.dataset.effect === "anchor") {
+                w.style.fontWeight = 900;
+                w.style.transform = "translateY(" + fp * 35 + "px)";
+                w.style.opacity = 1;
+              } else {
+                const revealDone = parseFloat(w.style.opacity) >= 0.9;
+                if (revealDone) {
+                  w.style.transform = "translateY(" + -fp * 45 + "px)";
+                  w.style.opacity = Math.max(0.25, 1 - fp * 0.75);
+                }
+              }
+            });
+          }
+
+          // --- Stanza 6: glitch ---
+          if (stanza.id === 6) {
+            words.forEach((w) => {
+              if (w.dataset.effect === "glitch") {
+                w.classList.toggle("glitch-active", progress > 0.5);
+              }
+            });
+          }
+
+          // --- Stanza 7: grow "swelling" ---
+          if (stanza.id === 7 && progress > 0.4) {
+            const gp = clamp01((progress - 0.4) / 0.5);
+            words.forEach((w) => {
+              if (w.dataset.effect === "grow") {
+                const size = 1 + gp * 2.8;
+                const weight = lerp(100, 900, gp);
+                w.style.fontSize = size + "em";
+                w.style.fontWeight = Math.round(weight);
+                w.style.transformOrigin = "center bottom";
+                w.style.lineHeight = "1";
+              }
+            });
+          }
+
+          // --- Stanza 8: stretch, marked, sharper ---
+          if (stanza.id === 8 && progress > 0.4) {
+            const ep = clamp01((progress - 0.4) / 0.5);
+            words.forEach((w) => {
+              if (w.dataset.effect === "spacing") {
+                w.style.letterSpacing = ep * 14 + "px";
+              } else if (w.dataset.effect === "strike") {
+                w.style.textDecoration = ep > 0.25 ? "line-through" : "none";
+                w.style.textDecorationThickness = Math.max(1, ep * 3) + "px";
+              } else if (w.dataset.effect === "bold") {
+                w.style.fontWeight = Math.round(lerp(100, 900, ep));
+              }
+            });
+          }
+
+          // --- Stanza 9: word swap ---
+          if (stanza.id === 9 && progress > 0.45) {
+            const swapPhase = Math.floor((progress - 0.45) / 0.12);
+            if (swapPhase !== lastSwapPhase && swapPhase > 0) {
+              lastSwapPhase = swapPhase;
+              const targets = textEl.querySelectorAll('[data-effect="swap"]');
+              if (targets.length) {
+                const texts = Array.from(targets).map((t) => t.textContent);
+                for (let i = texts.length - 1; i > 0; i--) {
+                  const j = Math.floor(Math.random() * (i + 1));
+                  [texts[i], texts[j]] = [texts[j], texts[i]];
+                }
+                targets.forEach((t, idx) => {
+                  t.style.opacity = "0";
+                  setTimeout(() => {
+                    t.textContent = texts[idx];
+                    t.style.opacity = "1";
+                  }, 280);
+                });
+              }
+            }
+          }
+
+          // --- Stanza 10: countup + shake ---
+          if (stanza.id === 10 && progress > 0.4 && !countStarted) {
+            countStarted = true;
+            const span = textEl.querySelector('[data-effect="countup"]');
+            if (span) {
+              const start = performance.now();
+              const dur = 3500;
+              function tick(now) {
+                const t = clamp01((now - start) / dur);
+                span.textContent = Math.floor(t * countTarget).toLocaleString();
+                if (t < 1) {
+                  requestAnimationFrame(tick);
+                } else {
+                  span.textContent = countTarget.toLocaleString();
+                  if (!countDone) {
+                    countDone = true;
+                    panel.classList.add("shake-active");
+                    setTimeout(
+                      () => panel.classList.remove("shake-active"),
+                      500,
+                    );
+                  }
+                }
+              }
+              requestAnimationFrame(tick);
+            }
+          }
+
+          // --- Fade out at section end ---
+          if (progress > 0.88) {
+            const fo = clamp01((1 - progress) / 0.12);
+            words.forEach((w) => {
+              const current = parseFloat(w.style.opacity) || 0;
+              w.style.opacity = Math.min(current, fo);
+            });
+          }
+        }
+
+        return { element: section, update };
+      }
+
+      /* ========================================
+       SCROLL ENGINE
+       ======================================== */
+      function getSectionProgress(el) {
+        const rect = el.getBoundingClientRect();
+        const scrollable = el.offsetHeight - vh;
+        if (scrollable <= 0) return 0;
+        return clamp01(-rect.top / scrollable);
+      }
+
+      function onFrame() {
+        // Update visible sections
+        sections.forEach((s) => {
+          const rect = s.element.getBoundingClientRect();
+          // Only update sections near viewport
+          if (rect.bottom > -vh && rect.top < vh * 2) {
+            const progress = getSectionProgress(s.element);
+            s.update(progress);
+          }
+        });
+
+        // Check for infinite loop
+        checkInfinite();
+
+        // Recycle old sections
+        recycle();
+
+        ticking = false;
+      }
+
+      function onScroll() {
+        if (!ticking) {
+          requestAnimationFrame(onFrame);
+          ticking = true;
+        }
+      }
+
+      /* ========================================
+       INFINITE LOOP
+       ======================================== */
+      function checkInfinite() {
+        const scrollBottom = window.scrollY + vh;
+        const docHeight = document.documentElement.scrollHeight;
+        if (docHeight - scrollBottom < vh * 2.5) {
+          cycleCount++;
+          buildCycle(cycleCount);
+          document.getElementById("cycle-indicator").textContent =
+            cycleCount > 0 ? cycleCount + 1 : "";
+        }
+      }
+
+      function buildCycle(cycle) {
+        STANZAS.forEach((stanza) => {
+          const s = buildSection(stanza, cycle);
+          container.appendChild(s.element);
+          sections.push(s);
+        });
+      }
+
+      function recycle() {
+        while (sections.length > 30) {
+          const first = sections[0];
+          const rect = first.element.getBoundingClientRect();
+          if (rect.bottom < -vh * 3) {
+            first.element.remove();
+            sections.shift();
+          } else {
+            break;
+          }
+        }
+      }
+
+      /* ========================================
+       INIT
+       ======================================== */
+      function init() {
+        vh = window.innerHeight;
+        buildCycle(0);
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", () => {
+          vh = window.innerHeight;
+        });
+        // Initial render
+        requestAnimationFrame(onFrame);
+      }
+
+      init();
+
+      /* ========================================
+       TOGGLE BOX
+       ======================================== */
+      const toggleBox = document.getElementById("toggle-box");
+      let toggled = false;
+      toggleBox.addEventListener("click", () => {
+        toggled = !toggled;
+        toggleBox.innerHTML = toggled
+          ? "A small computational poem by (<a href='https://www.instagram.com/yalla_halim' target='_blank'>@yalla_halim</a>)"
+          : "+";
+      });
+    </script>
+  </body>
+</html>
