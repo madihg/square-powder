@@ -303,6 +303,115 @@
         pointer-events: none;
       }
 
+      /* ---- Interstitial (between-frame scroll layer) ---- */
+      .interstitial {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        overflow: hidden;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+
+      .interstitial-line {
+        position: absolute;
+        background: rgba(0, 0, 0, 0.06);
+      }
+
+      .interstitial-line.vertical {
+        width: 1px;
+        height: 120%;
+        top: -10%;
+      }
+
+      .interstitial-line.horizontal {
+        height: 1px;
+        width: 60%;
+        left: 20%;
+      }
+
+      .interstitial-letter {
+        position: absolute;
+        font-family: "Times New Roman", Georgia, serif;
+        font-style: italic;
+        font-weight: 100;
+        color: rgba(0, 0, 0, 0.06);
+        user-select: none;
+      }
+
+      .interstitial-dot {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.04);
+      }
+
+      /* ---- Title screen ---- */
+      .title-screen {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+
+      .title-screen h1 {
+        font-family: "Times New Roman", Georgia, serif;
+        font-style: italic;
+        font-weight: 100;
+        font-size: clamp(32px, 6vw, 56px);
+        letter-spacing: 0.08em;
+        text-transform: lowercase;
+      }
+
+      .title-screen .byline {
+        font-family: "Courier New", Courier, monospace;
+        font-style: normal;
+        font-weight: normal;
+        font-size: clamp(11px, 1.8vw, 14px);
+        margin-top: 18px;
+        color: rgba(0, 0, 0, 0.45);
+      }
+
+      .scroll-hint {
+        position: absolute;
+        bottom: 36px;
+        font-family: "Courier New", Courier, monospace;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 11px;
+        letter-spacing: 0.3em;
+        text-transform: lowercase;
+        color: rgba(0, 0, 0, 0.3);
+        animation: hint-bob 2.4s ease-in-out infinite;
+      }
+
+      .scroll-hint::after {
+        content: "";
+        display: block;
+        width: 1px;
+        height: 18px;
+        background: rgba(0, 0, 0, 0.2);
+        margin: 8px auto 0;
+      }
+
+      @keyframes hint-bob {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(6px);
+        }
+      }
+
+      .title-screen.faded {
+        opacity: 0;
+        transition: opacity 0.6s ease;
+        pointer-events: none;
+      }
+
       /* ---- Mobile ---- */
       @media (max-width: 600px) {
         .panel-border {
@@ -320,6 +429,12 @@
   </head>
 
   <body>
+    <div class="title-screen" id="title-screen">
+      <h1>boys, not men</h1>
+      <div class="byline">Halim Madi</div>
+      <div class="scroll-hint">scroll</div>
+    </div>
+
     <div id="scroll-container"></div>
 
     <div id="toggle-box">+</div>
@@ -585,6 +700,52 @@
           panel.appendChild(borderEl);
         }
 
+        // Interstitial layer (visual fill between frames)
+        const interstitial = document.createElement("div");
+        interstitial.className = "interstitial";
+
+        if (stanza.type === "character") {
+          // Vertical speed lines
+          const count = 12 + Math.floor(Math.random() * 8);
+          for (let i = 0; i < count; i++) {
+            const line = document.createElement("div");
+            line.className = "interstitial-line vertical";
+            line.style.left = 5 + Math.random() * 90 + "%";
+            line.style.opacity = 0.3 + Math.random() * 0.7;
+            interstitial.appendChild(line);
+          }
+        } else if (stanza.type === "transition") {
+          // Drifting letter fragments from the stanza text
+          const chars = stanza.text.replace(/[\s\n,]/g, "");
+          const count = 15 + Math.floor(Math.random() * 10);
+          for (let i = 0; i < count; i++) {
+            const letter = document.createElement("span");
+            letter.className = "interstitial-letter";
+            letter.textContent =
+              chars[Math.floor(Math.random() * chars.length)];
+            letter.style.left = 5 + Math.random() * 90 + "%";
+            letter.style.top = Math.random() * 100 + "%";
+            letter.style.fontSize = 14 + Math.random() * 28 + "px";
+            letter.style.opacity = 0.4 + Math.random() * 0.6;
+            interstitial.appendChild(letter);
+          }
+        } else if (stanza.type === "absence") {
+          // Sparse dots that thin out
+          const count = 8 + Math.floor(Math.random() * 6);
+          for (let i = 0; i < count; i++) {
+            const dot = document.createElement("div");
+            dot.className = "interstitial-dot";
+            const size = 2 + Math.random() * 4;
+            dot.style.width = size + "px";
+            dot.style.height = size + "px";
+            dot.style.left = 10 + Math.random() * 80 + "%";
+            dot.style.top = Math.random() * 100 + "%";
+            dot.style.opacity = 0.3 + Math.random() * 0.5;
+            interstitial.appendChild(dot);
+          }
+        }
+        panel.appendChild(interstitial);
+
         // Text layer
         const textEl = document.createElement("div");
         textEl.className = "panel-text";
@@ -617,6 +778,26 @@
         // Update function
         function update(progress) {
           const words = textEl.querySelectorAll(".word");
+
+          // --- Interstitial parallax ---
+          if (interstitial) {
+            // Visible during transitions: ramp up 0-0.15, full 0.15-0.25, fade during text, reappear 0.75-0.88, fade 0.88-1
+            let intOp = 0;
+            if (progress < 0.08) {
+              intOp = clamp01(progress / 0.08);
+            } else if (progress < 0.15) {
+              intOp = clamp01(1 - (progress - 0.08) / 0.07);
+            } else if (progress > 0.82 && progress < 1) {
+              intOp = clamp01((progress - 0.82) / 0.06);
+              if (progress > 0.92) {
+                intOp = clamp01((1 - progress) / 0.08);
+              }
+            }
+            interstitial.style.opacity = intOp;
+            // Parallax: scroll the layer upward as progress increases
+            const yShift = -progress * 60;
+            interstitial.style.transform = "translateY(" + yShift + "vh)";
+          }
 
           // --- Art fade ---
           if (art) {
@@ -882,6 +1063,21 @@
         window.addEventListener("resize", () => {
           vh = window.innerHeight;
         });
+
+        // Fade title screen on scroll
+        const titleScreen = document.getElementById("title-screen");
+        let titleFaded = false;
+        window.addEventListener(
+          "scroll",
+          () => {
+            if (!titleFaded && window.scrollY > vh * 0.25) {
+              titleScreen.classList.add("faded");
+              titleFaded = true;
+            }
+          },
+          { passive: true },
+        );
+
         // Initial render
         requestAnimationFrame(onFrame);
       }
